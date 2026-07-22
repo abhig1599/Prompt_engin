@@ -1,7 +1,7 @@
 // src/components/AddModal.jsx — Caldera style
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const MODELS = ['Midjourney', 'DALL·E 3', 'Stable Diffusion', 'Adobe Firefly', 'Google Imagen', 'Flux', 'Other'];
+const MODELS = ['Midjourney', 'DALL·E 3', 'Stable Diffusion', 'Adobe Firefly', 'Google Imagen', 'Flux', 'Gemini Nano', 'ChatGPT', 'Other'];
 const MAX_CHARS = 1000;
 
 export default function AddModal({ onClose, onSave }) {

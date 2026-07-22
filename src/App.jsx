@@ -1,34 +1,34 @@
 // src/App.jsx
 import { useState, useMemo, useCallback } from 'react';
-import Header     from './components/Header';
-import SearchBar  from './components/SearchBar';
-import Gallery    from './components/Gallery';
-import AddModal   from './components/AddModal';
+import Header      from './components/Header';
+import SearchBar   from './components/SearchBar';
+import Gallery     from './components/Gallery';
+import AddModal    from './components/AddModal';
 import DetailModal from './components/DetailModal';
-import Toast      from './components/Toast';
-import Loader     from './components/Loader';
+import Toast       from './components/Toast';
+import Loader      from './components/Loader';
 import { usePrompts } from './hooks/usePrompts';
 import { useToast }   from './hooks/useToast';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
+
   const { prompts, addPrompt, toggleFav, deletePrompt } = usePrompts();
   const { toast, showToast } = useToast();
 
-  const [filter,    setFilter]    = useState('all');   // 'all' | 'fav'
-  const [search,    setSearch]    = useState('');
-  const [showAdd,   setShowAdd]   = useState(false);
-  const [detailId,  setDetailId]  = useState(null);
+  const [filter,   setFilter]   = useState('all');
+  const [search,   setSearch]   = useState('');
+  const [showAdd,  setShowAdd]  = useState(false);
+  const [detailId, setDetailId] = useState(null);
 
-  // Filtered + searched prompts
   const visible = useMemo(() => {
     let list = filter === 'fav' ? prompts.filter(p => p.fav) : prompts;
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(p =>
         p.prompt.toLowerCase().includes(q) ||
-        (p.model  || '').toLowerCase().includes(q) ||
-        (p.tags   || []).some(t => t.toLowerCase().includes(q))
+        (p.model || '').toLowerCase().includes(q) ||
+        (p.tags  || []).some(t => t.toLowerCase().includes(q))
       );
     }
     return list;
@@ -58,7 +58,6 @@ export default function App() {
 
       <SearchBar value={search} onChange={setSearch} />
 
-      {/* Stats strip */}
       <div className="stats-strip">
         <p className="stats-count">
           <strong>{visible.length}</strong> prompt{visible.length !== 1 ? 's' : ''}
@@ -78,10 +77,7 @@ export default function App() {
       </div>
 
       {showAdd && (
-        <AddModal
-          onClose={() => setShowAdd(false)}
-          onSave={handleSave}
-        />
+        <AddModal onClose={() => setShowAdd(false)} onSave={handleSave} />
       )}
 
       {detailPrompt && (
@@ -104,6 +100,18 @@ export default function App() {
       >
         +
       </button>
+
+      {/* Bottom-left cat Lottie — web component, no npm crash risk */}
+      <div className="brand-badge">
+        <lottie-player
+          src="/cat.json"
+          background="transparent"
+          speed="1"
+          style={{ width: '100%', height: '100%' }}
+          loop
+          autoplay
+        />
+      </div>
     </>
   );
 }

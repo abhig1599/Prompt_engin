@@ -882,6 +882,19 @@ input, textarea, select { font-family: var(--font-body); font-weight: var(--weig
 .fab:active { transform: scale(0.96); }
 
 /* ================================================================
+   BRAND BADGE — bottom-left black rectangle
+   ================================================================ */
+.brand-badge {
+  position: fixed;
+  bottom: -55px;
+  left: 0;
+  z-index: 10;
+  width: 280px;
+  height: 180px;
+  background: transparent;
+}
+
+/* ================================================================
    LOADER / SPLASH SCREEN
    ================================================================ */
 .loader-backdrop {
