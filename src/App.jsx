@@ -6,10 +6,12 @@ import Gallery    from './components/Gallery';
 import AddModal   from './components/AddModal';
 import DetailModal from './components/DetailModal';
 import Toast      from './components/Toast';
+import Loader     from './components/Loader';
 import { usePrompts } from './hooks/usePrompts';
 import { useToast }   from './hooks/useToast';
 
 export default function App() {
+  const [loading, setLoading] = useState(true);
   const { prompts, addPrompt, toggleFav, deletePrompt } = usePrompts();
   const { toast, showToast } = useToast();
 
@@ -47,6 +49,8 @@ export default function App() {
     toggleFav(id);
     showToast(p?.fav ? '♡ Removed from favorites' : '❤ Added to favorites');
   }, [prompts, toggleFav, showToast]);
+
+  if (loading) return <Loader onDone={() => setLoading(false)} />;
 
   return (
     <>

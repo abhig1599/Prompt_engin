@@ -881,3 +881,86 @@ input, textarea, select { font-family: var(--font-body); font-weight: var(--weig
 }
 .fab:active { transform: scale(0.96); }
 
+/* ================================================================
+   LOADER / SPLASH SCREEN
+   ================================================================ */
+.loader-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-limestone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+.loader-backdrop.loader-fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-24);
+  width: 260px;
+}
+
+/* Spinning logo */
+.loader-logo-wrap {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: loaderSpin 1.4s linear infinite;
+}
+@keyframes loaderSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.loader-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Brand name */
+.loader-brand {
+  font-family: var(--font-display);
+  font-size: var(--text-heading);
+  letter-spacing: 0.06em;
+  color: var(--color-obsidian);
+  line-height: 1;
+  margin-top: calc(-1 * var(--sp-8));
+}
+
+/* Progress bar track */
+.loader-bar-track {
+  width: 100%;
+  height: 4px;
+  background: var(--color-pumice);
+  border-radius: var(--radius-pills);
+  overflow: hidden;
+}
+
+/* Progress bar fill */
+.loader-bar-fill {
+  height: 100%;
+  background: var(--color-ember);
+  border-radius: var(--radius-pills);
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Percentage label */
+.loader-pct {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  color: var(--color-obsidian);
+  opacity: 0.45;
+  letter-spacing: 0.04em;
+}
