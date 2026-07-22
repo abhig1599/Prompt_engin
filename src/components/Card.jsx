@@ -1,6 +1,27 @@
 // src/components/Card.jsx — Caldera style
 import { useState, useCallback } from 'react';
 
+/* Map model names → the URL to open (prompt is appended as a query param) */
+const MODEL_URLS = {
+  'ChatGPT':           (p) => `https://chat.openai.com/?q=${encodeURIComponent(p)}`,
+  'Gemini':            (p) => `https://gemini.google.com/app?q=${encodeURIComponent(p)}`,
+  'Gemini Nano':       (p) => `https://gemini.google.com/app?q=${encodeURIComponent(p)}`,
+  'Google Imagen':     (p) => `https://gemini.google.com/app?q=${encodeURIComponent(p)}`,
+  'Claude':            (p) => `https://claude.ai/new?q=${encodeURIComponent(p)}`,
+  'Midjourney':        (p) => `https://www.midjourney.com/imagine?q=${encodeURIComponent(p)}`,
+  'DALL·E 3':          (p) => `https://labs.openai.com/`,
+  'Stable Diffusion':  (p) => `https://stablediffusionweb.com/`,
+  'Adobe Firefly':     (p) => `https://firefly.adobe.com/`,
+  'Flux':              (p) => `https://fal.ai/models/fal-ai/flux/dev`,
+  'Other':             (p) => `https://chat.openai.com/?q=${encodeURIComponent(p)}`,
+};
+
+function getModelUrl(model, prompt) {
+  if (!model) return `https://chat.openai.com/?q=${encodeURIComponent(prompt)}`;
+  const builder = MODEL_URLS[model];
+  return builder ? builder(prompt) : `https://chat.openai.com/?q=${encodeURIComponent(prompt)}`;
+}
+
 export default function Card({ prompt: p, onFav, onCopy, onClick }) {
   const [copied, setCopied]   = useState(false);
   const [popFav, setPopFav]   = useState(false);
@@ -14,6 +35,13 @@ export default function Card({ prompt: p, onFav, onCopy, onClick }) {
     });
   }, [p.prompt, onCopy]);
 
+  const handleTry = useCallback((e) => {
+    e.stopPropagation();
+    const url = getModelUrl(p.model, p.prompt);
+    window.open(url, '_blank', 'noopener,noreferrer');
+    onCopy(`Opening in ${p.model || 'ChatGPT'}…`);
+  }, [p.model, p.prompt, onCopy]);
+
   const handleFav = useCallback((e) => {
     e.stopPropagation();
     onFav(p.id);
@@ -23,7 +51,7 @@ export default function Card({ prompt: p, onFav, onCopy, onClick }) {
 
   return (
     <article className="card" onClick={() => onClick(p.id)}>
-      {/* Image / Ember placeholder block */}
+      {/* Image / Ember placeholder block — fixed 16:9 aspect ratio */}
       {p.image ? (
         <div className="card-img-wrap">
           <img className="card-img" src={p.image} alt="Prompt visual" loading="lazy" />
@@ -41,26 +69,35 @@ export default function Card({ prompt: p, onFav, onCopy, onClick }) {
         {p.fav ? '❤' : '♡'}
       </button>
 
-      {/* Card body — 40px padding */}
+      {/* Card body */}
       <div className="card-body">
         {(p.tags?.length > 0 || p.model) && (
           <div className="card-tags">
-            {/* Sulfur tags */}
             {p.tags?.map(t => <span key={t} className="tag">{t}</span>)}
-            {/* Ember model badge */}
             {p.model && <span className="tag tag-model">{p.model}</span>}
           </div>
         )}
+        {/* Truncated prompt text — 3 lines max */}
         <p className="card-prompt">{p.prompt}</p>
       </div>
 
-      {/* Copy button — Ember pill, shows on hover */}
-      <button
-        className={`card-copy-btn ${copied ? 'copied' : ''}`}
-        onClick={handleCopy}
-      >
-        {copied ? '✓ Copied!' : '⎘ Copy Prompt'}
-      </button>
+      {/* Hover action buttons row */}
+      <div className="card-actions">
+        <button
+          className={`card-action-btn card-copy-btn ${copied ? 'copied' : ''}`}
+          onClick={handleCopy}
+          title="Copy prompt to clipboard"
+        >
+          {copied ? 'Copied!' : 'Copy Prompt'}
+        </button>
+        <button
+          className="card-action-btn card-try-btn"
+          onClick={handleTry}
+          title={`Open in ${p.model || 'ChatGPT'}`}
+        >
+          Try Prompt
+        </button>
+      </div>
     </article>
   );
 }
