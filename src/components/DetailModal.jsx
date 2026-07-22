@@ -5,8 +5,10 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-export default function DetailModal({ prompt: p, onClose, onFav, onCopy }) {
-  const [copied, setCopied] = useState(false);
+export default function DetailModal({ prompt: p, onClose, onFav, onCopy, onDelete }) {
+  const [copied,       setCopied]       = useState(false);
+  const [confirming,   setConfirming]   = useState(false);
+  const [isHorizontal, setIsHorizontal] = useState(false);
   const backdropRef = useRef(null);
 
   useEffect(() => {
@@ -14,6 +16,22 @@ export default function DetailModal({ prompt: p, onClose, onFav, onCopy }) {
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [onClose]);
+
+  useEffect(() => {
+    if (p.image) {
+      const img = new Image();
+      img.src = p.image;
+      img.onload = () => {
+        if (img.naturalWidth > img.naturalHeight) {
+          setIsHorizontal(true);
+        } else {
+          setIsHorizontal(false);
+        }
+      };
+    } else {
+      setIsHorizontal(false);
+    }
+  }, [p.image]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(p.prompt).then(() => {
@@ -23,20 +41,35 @@ export default function DetailModal({ prompt: p, onClose, onFav, onCopy }) {
     });
   };
 
+  const handleDeleteConfirm = () => {
+    onDelete(p.id);
+    onClose();
+  };
+
   return (
     <div
       className="modal-backdrop"
       ref={backdropRef}
       onClick={(e) => { if (e.target === backdropRef.current) onClose(); }}
     >
-      <div className="modal-box modal-lg">
+      <div className={`modal-box modal-lg ${isHorizontal ? 'modal-horizontal' : ''}`}>
         <button className="modal-close-btn" onClick={onClose} aria-label="Close">✕</button>
 
-        <div className="detail-layout">
-          {/* Left — Image / Ember block */}
+        <div className={`detail-layout ${isHorizontal ? 'detail-layout-horizontal' : ''}`}>
+          {/* Image / Ember block */}
           <div className="detail-img-col">
             {p.image
-              ? <img src={p.image} alt="Prompt visual" />
+              ? (
+                <img
+                  src={p.image}
+                  alt="Prompt visual"
+                  onLoad={(e) => {
+                    if (e.target.naturalWidth > e.target.naturalHeight) {
+                      setIsHorizontal(true);
+                    }
+                  }}
+                />
+              )
               : <div className="detail-no-img">PROMPT</div>
             }
           </div>
@@ -63,7 +96,7 @@ export default function DetailModal({ prompt: p, onClose, onFav, onCopy }) {
               className={`detail-copy-btn ${copied ? 'copied' : ''}`}
               onClick={handleCopy}
             >
-              {copied ? '✓ Copied to clipboard!' : '⎘ Copy Prompt'}
+              {copied ? 'Copied to clipboard!' : 'Copy Prompt'}
             </button>
 
             {/* Fav — secondary 40px button */}
@@ -82,6 +115,38 @@ export default function DetailModal({ prompt: p, onClose, onFav, onCopy }) {
             )}
 
             <div className="detail-date">Added {formatDate(p.createdAt)}</div>
+
+            {/* ── Delete zone ── */}
+            <div className="detail-delete-zone">
+              {!confirming ? (
+                <button
+                  className="detail-delete-btn"
+                  onClick={() => setConfirming(true)}
+                  aria-label="Move to trash"
+                >
+                  Move to Trash
+                </button>
+              ) : (
+                <div className="detail-confirm-strip">
+                  <span className="detail-confirm-label">Move this prompt to trash?</span>
+                  <div className="detail-confirm-actions">
+                    <button
+                      className="detail-confirm-cancel"
+                      onClick={() => setConfirming(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="detail-confirm-delete"
+                      onClick={handleDeleteConfirm}
+                    >
+                      Yes, Trash It
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </div>

@@ -1,5 +1,4 @@
-// src/components/Card.jsx — Caldera style
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 /* Map model names → the URL to open (prompt is appended as a query param) */
 const MODEL_URLS = {
@@ -23,8 +22,25 @@ function getModelUrl(model, prompt) {
 }
 
 export default function Card({ prompt: p, onFav, onCopy, onClick }) {
-  const [copied, setCopied]   = useState(false);
-  const [popFav, setPopFav]   = useState(false);
+  const [copied,     setCopied]     = useState(false);
+  const [popFav,     setPopFav]     = useState(false);
+  const [isPortrait, setIsPortrait] = useState(false);
+
+  useEffect(() => {
+    if (p.image) {
+      const img = new Image();
+      img.src = p.image;
+      img.onload = () => {
+        if (img.naturalHeight > img.naturalWidth) {
+          setIsPortrait(true);
+        } else {
+          setIsPortrait(false);
+        }
+      };
+    } else {
+      setIsPortrait(false);
+    }
+  }, [p.image]);
 
   const handleCopy = useCallback((e) => {
     e.stopPropagation();
@@ -51,10 +67,20 @@ export default function Card({ prompt: p, onFav, onCopy, onClick }) {
 
   return (
     <article className="card" onClick={() => onClick(p.id)}>
-      {/* Image / Ember placeholder block — fixed 16:9 aspect ratio */}
+      {/* Image / Ember placeholder block */}
       {p.image ? (
-        <div className="card-img-wrap">
-          <img className="card-img" src={p.image} alt="Prompt visual" loading="lazy" />
+        <div className={`card-img-wrap ${isPortrait ? 'card-img-portrait' : ''}`}>
+          <img
+            className="card-img"
+            src={p.image}
+            alt="Prompt visual"
+            loading="lazy"
+            onLoad={(e) => {
+              if (e.target.naturalHeight > e.target.naturalWidth) {
+                setIsPortrait(true);
+              }
+            }}
+          />
         </div>
       ) : (
         <div className="card-no-img">PROMPT</div>

@@ -5,6 +5,7 @@ import SearchBar   from './components/SearchBar';
 import Gallery     from './components/Gallery';
 import AddModal    from './components/AddModal';
 import DetailModal from './components/DetailModal';
+import TrashModal  from './components/TrashModal';
 import Toast       from './components/Toast';
 import Loader      from './components/Loader';
 import { usePrompts } from './hooks/usePrompts';
@@ -13,13 +14,14 @@ import { useToast }   from './hooks/useToast';
 export default function App() {
   const [loading, setLoading] = useState(true);
 
-  const { prompts, addPrompt, toggleFav, deletePrompt } = usePrompts();
+  const { prompts, trash, addPrompt, toggleFav, softDelete, recoverPrompt, purgeFromTrash } = usePrompts();
   const { toast, showToast } = useToast();
 
-  const [filter,   setFilter]   = useState('all');
-  const [search,   setSearch]   = useState('');
-  const [showAdd,  setShowAdd]  = useState(false);
-  const [detailId, setDetailId] = useState(null);
+  const [filter,    setFilter]    = useState('all');
+  const [search,    setSearch]    = useState('');
+  const [showAdd,   setShowAdd]   = useState(false);
+  const [detailId,  setDetailId]  = useState(null);
+  const [showTrash, setShowTrash] = useState(false);
 
   const visible = useMemo(() => {
     let list = filter === 'fav' ? prompts.filter(p => p.fav) : prompts;
@@ -50,11 +52,33 @@ export default function App() {
     showToast(p?.fav ? '♡ Removed from favorites' : '❤ Added to favorites');
   }, [prompts, toggleFav, showToast]);
 
+  const handleDelete = useCallback((id) => {
+    softDelete(id);
+    setDetailId(null);
+    showToast('Moved to Trash · Recoverable for 30 days');
+  }, [softDelete, showToast]);
+
+  const handleRecover = useCallback((id) => {
+    recoverPrompt(id);
+    showToast('Prompt recovered to your board!');
+  }, [recoverPrompt, showToast]);
+
+  const handlePurge = useCallback((id) => {
+    purgeFromTrash(id);
+    showToast('Permanently deleted.');
+  }, [purgeFromTrash, showToast]);
+
   if (loading) return <Loader onDone={() => setLoading(false)} />;
 
   return (
     <>
-      <Header filter={filter} setFilter={setFilter} onAdd={() => setShowAdd(true)} />
+      <Header
+        filter={filter}
+        setFilter={setFilter}
+        onAdd={() => setShowAdd(true)}
+        onTrash={() => setShowTrash(true)}
+        trashCount={trash.length}
+      />
 
       <SearchBar value={search} onChange={setSearch} />
 
@@ -86,6 +110,16 @@ export default function App() {
           onClose={() => setDetailId(null)}
           onFav={handleFav}
           onCopy={showToast}
+          onDelete={handleDelete}
+        />
+      )}
+
+      {showTrash && (
+        <TrashModal
+          trash={trash}
+          onClose={() => setShowTrash(false)}
+          onRecover={handleRecover}
+          onPurge={handlePurge}
         />
       )}
 
