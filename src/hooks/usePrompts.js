@@ -79,10 +79,8 @@ export function usePrompts() {
     const target = prompts.find(p => p.id === id);
     if (!target) return;
     
-    // 1. Delete from Appwrite DB
     await databases.deleteDocument(DB_ID, COL_ID, id);
     
-    // 2. Add to local trash
     const trashed = { ...target, deletedAt: new Date().toISOString() };
     setTrash(t => [...t, trashed]);
     setPrompts(prev => prev.filter(p => p.id !== id));
@@ -101,7 +99,6 @@ export function usePrompts() {
       imageUrl: restored.image || null
     };
 
-    // Re-create in Appwrite using the same ID
     const res = await databases.createDocument(DB_ID, COL_ID, id, payload);
     setPrompts(prev => [...prev, mapDoc(res)]);
     setTrash(prev => prev.filter(p => p.id !== id));
