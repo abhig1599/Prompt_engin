@@ -1,7 +1,10 @@
-// src/hooks/usePrompts.js
 import { useState, useCallback, useEffect } from 'react';
+import { databases, storage, ID } from '../api/appwrite';
 
-const STORAGE_KEY       = 'promptboard_react_v1';
+const DB_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
+const COL_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
+const BUCKET_ID = import.meta.env.VITE_APPWRITE_BUCKET_ID;
+
 const TRASH_STORAGE_KEY = 'promptboard_trash_v1';
 const TRASH_TTL_DAYS    = 30;
 
@@ -17,104 +20,110 @@ function purgeExpiredTrash(trashList) {
   return trashList.filter(p => new Date(p.deletedAt).getTime() > cutoff);
 }
 
-const DEMO = [
-  {
-    id: crypto.randomUUID(),
-    prompt: "A cinematic photo of a neon-lit Tokyo alley at night, rain reflections on wet cobblestones, bokeh lights, dramatic fog, Blade Runner aesthetic, 8K ultra-detailed",
-    image: null, tags: ['cinematic','night','sci-fi'], model: 'Midjourney', fav: false,
-    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-  },
-  {
-    id: crypto.randomUUID(),
-    prompt: "Portrait of a mysterious woman with glowing blue eyes, flowing silver hair, wearing iridescent armor, painted in the style of Alphonse Mucha, art nouveau, vibrant jewel-tone colors",
-    image: null, tags: ['portrait','fantasy','art nouveau'], model: 'DALL·E 3', fav: true,
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-  },
-  {
-    id: crypto.randomUUID(),
-    prompt: "An ancient library floating in space, bookshelves spiraling into infinity, golden dust particles, warm candlelight, cosmic nebula visible through huge arched windows, hyperdetailed",
-    image: null, tags: ['fantasy','space','surreal'], model: 'Stable Diffusion', fav: false,
-    createdAt: new Date(Date.now() - 86400000 * 1.5).toISOString(),
-  },
-  {
-    id: crypto.randomUUID(),
-    prompt: "A hyperrealistic macro photograph of a dewdrop on a spider's web at sunrise, rainbow reflections, golden hour, ethereal depth of field, National Geographic quality",
-    image: null, tags: ['macro','nature','photography'], model: 'Google Imagen', fav: false,
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: crypto.randomUUID(),
-    prompt: "Cyberpunk street market in a megacity, holographic ads, diverse crowd, street food stalls with neon signs, flying vehicles overhead, gritty realistic style, ultra wide angle lens",
-    image: null, tags: ['cyberpunk','street','wide-angle'], model: 'Flux', fav: true,
-    createdAt: new Date(Date.now() - 7200000).toISOString(),
-  },
-  {
-    id: crypto.randomUUID(),
-    prompt: "Minimalist product photo of a translucent glass perfume bottle, soft diffused studio lighting, white marble background, luxury aesthetic, high-end commercial photography, 4K",
-    image: null, tags: ['product','minimalist','luxury'], model: 'Adobe Firefly', fav: false,
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-  },
-];
+const mapDoc = (doc) => ({
+  id: doc.$id,
+  prompt: doc.content,
+  image: doc.imageUrl,
+  model: doc.model,
+  tags: [], 
+  fav: false 
+});
 
 export function usePrompts() {
-  const [prompts, setPrompts] = useState(() => load(STORAGE_KEY) ?? DEMO);
-  const [trash,   setTrash]   = useState(() => {
+  const [prompts, setPrompts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [trash, setTrash] = useState(() => {
     const saved = load(TRASH_STORAGE_KEY) ?? [];
-    return purgeExpiredTrash(saved); // auto-purge expired on mount
+    return purgeExpiredTrash(saved);
   });
 
-  // Keep trash localStorage in sync whenever trash state changes (auto-purge on mount too)
   useEffect(() => {
     localStorage.setItem(TRASH_STORAGE_KEY, JSON.stringify(trash));
   }, [trash]);
 
-  const persist = useCallback((next) => {
-    setPrompts(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  }, []);
+  const loadPrompts = async () => {
+    if (!DB_ID || !COL_ID) return setLoading(false);
+    try {
+      setLoading(true);
+      const res = await databases.listDocuments(DB_ID, COL_ID);
+      setPrompts(res.documents.map(mapDoc));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const addPrompt = useCallback((data) => {
-    const entry = { id: crypto.randomUUID(), fav: false, createdAt: new Date().toISOString(), ...data };
-    persist((prev) => [...prev, entry]);
-    return entry;
-  }, [persist]);
+  useEffect(() => { loadPrompts(); }, []);
 
-  const toggleFav = useCallback((id) => {
-    persist((prev) => prev.map(p => p.id === id ? { ...p, fav: !p.fav } : p));
-  }, [persist]);
+  const addPrompt = async (data) => {
+    let imageUrl = null;
+    if (data.imageFile && BUCKET_ID) {
+      try {
+        const fileRes = await storage.createFile(BUCKET_ID, ID.unique(), data.imageFile);
+        imageUrl = storage.getFileView(BUCKET_ID, fileRes.$id).href;
+      } catch (err) { console.error(err); }
+    }
+    const payload = {
+      title: data.prompt.slice(0, 30) + '...',
+      content: data.prompt,
+      model: data.model || null,
+      imageUrl: imageUrl
+    };
+    const res = await databases.createDocument(DB_ID, COL_ID, ID.unique(), payload);
+    setPrompts(prev => [mapDoc(res), ...prev]);
+    return res;
+  };
 
-  /** Soft-delete: move from active list → trash with a deletedAt timestamp */
-  const softDelete = useCallback((id) => {
-    setPrompts(prev => {
-      const target = prev.find(p => p.id === id);
-      if (!target) return prev;
-      const trashed = { ...target, deletedAt: new Date().toISOString() };
-      setTrash(t => [...t, trashed]);
-      const next = prev.filter(p => p.id !== id);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      return next;
-    });
-  }, []);
+  const softDelete = async (id) => {
+    const target = prompts.find(p => p.id === id);
+    if (!target) return;
+    
+    // 1. Delete from Appwrite DB
+    await databases.deleteDocument(DB_ID, COL_ID, id);
+    
+    // 2. Add to local trash
+    const trashed = { ...target, deletedAt: new Date().toISOString() };
+    setTrash(t => [...t, trashed]);
+    setPrompts(prev => prev.filter(p => p.id !== id));
+  };
 
-  /** Recover: move from trash → active list, strip deletedAt */
-  const recoverPrompt = useCallback((id) => {
-    setTrash(prev => {
-      const target = prev.find(p => p.id === id);
-      if (!target) return prev;
-      const { deletedAt, ...restored } = target; // eslint-disable-line no-unused-vars
-      setPrompts(ps => {
-        const next = [...ps, restored];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        return next;
-      });
-      return prev.filter(p => p.id !== id);
-    });
-  }, []);
+  const recoverPrompt = async (id) => {
+    const target = trash.find(p => p.id === id);
+    if (!target) return;
+    
+    const { deletedAt, ...restored } = target;
+    
+    const payload = {
+      title: restored.prompt.slice(0, 30) + '...',
+      content: restored.prompt,
+      model: restored.model || null,
+      imageUrl: restored.image || null
+    };
 
-  /** Permanently delete from trash */
+    // Re-create in Appwrite using the same ID
+    const res = await databases.createDocument(DB_ID, COL_ID, id, payload);
+    setPrompts(prev => [...prev, mapDoc(res)]);
+    setTrash(prev => prev.filter(p => p.id !== id));
+  };
+
   const purgeFromTrash = useCallback((id) => {
     setTrash(prev => prev.filter(p => p.id !== id));
   }, []);
 
-  return { prompts, trash, addPrompt, toggleFav, softDelete, recoverPrompt, purgeFromTrash };
+  const toggleFav = (id) => {
+    setPrompts(prev => prev.map(p => p.id === id ? { ...p, fav: !p.fav } : p));
+  };
+
+  return { 
+    prompts, 
+    trash, 
+    loading, 
+    addPrompt, 
+    softDelete, 
+    recoverPrompt, 
+    purgeFromTrash, 
+    toggleFav, 
+    loadPrompts 
+  };
 }
