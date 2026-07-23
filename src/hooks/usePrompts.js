@@ -54,17 +54,32 @@ function getFileUrl(fileId) {
   }
 }
 
-const mapDoc = (doc, favsMap = {}, tagsMap = {}, inputsMap = {}, myPromptIds = []) => ({
-  id: doc.$id,
-  prompt: doc.content,
-  image: doc.imageUrl,
-  model: doc.model,
-  tags: tagsMap[doc.$id] || [],
-  inputsNeeded: inputsMap[doc.$id] || doc.inputsNeeded || null,
-  fav: !!favsMap[doc.$id],
-  isOwner: myPromptIds.includes(doc.$id),
-  createdAt: doc.$createdAt
-});
+function parseTags(rawTags) {
+  if (!rawTags) return [];
+  if (Array.isArray(rawTags)) return rawTags.filter(Boolean);
+  if (typeof rawTags === 'string') {
+    return rawTags.split(',').map(t => t.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+const mapDoc = (doc, favsMap = {}, tagsMap = {}, inputsMap = {}, myPromptIds = []) => {
+  const localTags = tagsMap[doc.$id];
+  const docTags = parseTags(doc.tags);
+  const combinedTags = (localTags && localTags.length > 0) ? localTags : docTags;
+
+  return {
+    id: doc.$id,
+    prompt: doc.content,
+    image: doc.imageUrl,
+    model: doc.model,
+    tags: combinedTags,
+    inputsNeeded: inputsMap[doc.$id] || doc.inputsNeeded || null,
+    fav: !!favsMap[doc.$id],
+    isOwner: myPromptIds.includes(doc.$id),
+    createdAt: doc.$createdAt
+  };
+};
 
 export function usePrompts() {
   const [prompts, setPrompts] = useState([]);

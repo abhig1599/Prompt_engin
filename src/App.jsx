@@ -92,6 +92,7 @@ export default function App() {
       <Header
         filter={filter}
         setFilter={setFilter}
+        onAdd={() => setShowAdd(true)}
         onTrash={() => setShowTrash(true)}
         trashCount={trash.length}
       />
@@ -142,16 +143,6 @@ export default function App() {
       )}
 
       <Toast msg={toast.msg} show={toast.show} />
-
-      {/* Floating Action Button */}
-      <button
-        className="fab"
-        onClick={() => setShowAdd(true)}
-        aria-label="Add new prompt"
-        title="Add new prompt"
-      >
-        +
-      </button>
 
       {/* Bottom-left cat Lottie — web component, no npm crash risk */}
       <div className="brand-badge">

@@ -1,5 +1,5 @@
 // src/components/Header.jsx — Caldera style
-export default function Header({ filter, setFilter, onTrash, trashCount }) {
+export default function Header({ filter, setFilter, onAdd, onTrash, trashCount }) {
   return (
     <header className="header">
       <div className="header-inner">
@@ -40,6 +40,11 @@ export default function Header({ filter, setFilter, onTrash, trashCount }) {
           {trashCount > 0 && (
             <span className="trash-badge">{trashCount}</span>
           )}
+        </button>
+
+        {/* Primary CTA — Ember pill */}
+        <button className="btn-primary" onClick={onAdd}>
+          + Add Prompt
         </button>
       </div>
     </header>

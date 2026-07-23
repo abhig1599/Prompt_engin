@@ -65,6 +65,10 @@ export default function Card({ prompt: p, onFav, onCopy, onClick }) {
     setTimeout(() => setPopFav(false), 400);
   }, [p.id, onFav]);
 
+  const formattedTags = Array.isArray(p.tags)
+    ? p.tags
+    : (typeof p.tags === 'string' ? p.tags.split(',').map(t => t.trim()).filter(Boolean) : []);
+
   return (
     <article className="card" onClick={() => onClick(p.id)}>
       {/* Image / Ember placeholder block */}
@@ -99,9 +103,11 @@ export default function Card({ prompt: p, onFav, onCopy, onClick }) {
 
       {/* Card body */}
       <div className="card-body">
-        {(p.tags?.length > 0 || p.model) && (
+        {(formattedTags.length > 0 || p.model) && (
           <div className="card-tags">
-            {p.tags?.map(t => <span key={t} className="tag">{t}</span>)}
+            {formattedTags.map((t, idx) => (
+              <span key={`${t}-${idx}`} className="tag">{t.startsWith('#') ? t : `#${t}`}</span>
+            ))}
             {p.model && <span className="tag tag-model">{p.model}</span>}
           </div>
         )}
