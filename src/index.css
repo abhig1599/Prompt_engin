@@ -233,7 +233,7 @@ input, textarea, select { font-family: var(--font-body); font-weight: var(--weig
   align-items: center;
   gap: var(--sp-12);
   background: var(--color-limestone);
-  border: 1.5px solid var(--color-obsidian);
+  border: 1.5px solid transparent;
   border-radius: var(--radius-inputs); /* 100px */
   padding: 12px var(--sp-24);
   transition: border-color 140ms;
@@ -381,6 +381,56 @@ input, textarea, select { font-family: var(--font-body); font-weight: var(--weig
 .tag-model {
   background: var(--color-ember);
   color: var(--color-chalk);
+}
+
+/* Tag input interactive chips */
+.tag-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+.tag-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+}
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-sulfur);
+  color: var(--color-obsidian);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  padding: 4px 10px;
+  border-radius: var(--radius-pills);
+  animation: tagChipIn 140ms var(--ease);
+}
+@keyframes tagChipIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.tag-remove-btn {
+  background: none;
+  border: none;
+  color: var(--color-obsidian);
+  opacity: 0.6;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  transition: opacity 120ms, transform 120ms;
+}
+.tag-remove-btn:hover {
+  opacity: 1;
+  transform: scale(1.25);
+  color: var(--color-ember);
 }
 
 /* Prompt text — 3-line clamp with ellipsis, fixed height so cards stay consistent */
@@ -580,7 +630,44 @@ input, textarea, select { font-family: var(--font-body); font-weight: var(--weig
   letter-spacing: 0.02em;
   line-height: var(--leading-heading);
   color: var(--color-obsidian);
+  margin-bottom: var(--sp-8);
+}
+.modal-subtitle {
+  font-size: var(--text-body-sm);
+  color: var(--color-obsidian);
+  opacity: .55;
   margin-bottom: var(--sp-24);
+}
+
+.edit-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-16);
+}
+@media (max-width: 520px) {
+  .edit-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.remove-img-pill {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  background: rgba(7,6,7,0.75);
+  color: var(--color-chalk);
+  border: none;
+  border-radius: var(--radius-pills);
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background 140ms, transform 140ms;
+}
+.remove-img-pill:hover {
+  background: var(--color-ember);
+  transform: scale(1.05);
 }
 
 .modal-form { display: flex; flex-direction: column; gap: var(--sp-20); }
@@ -735,6 +822,47 @@ input, textarea, select { font-family: var(--font-body); font-weight: var(--weig
 }
 
 .detail-tags { display:flex; flex-wrap:wrap; gap:var(--sp-8); }
+
+/* What to provide to AI box in Detail Modal */
+.detail-inputs-box {
+  background: rgba(252,80,0,0.06);
+  border: 1.5px solid rgba(252,80,0,0.2);
+  border-radius: var(--radius-small);
+  padding: var(--sp-12) var(--sp-16);
+}
+.detail-inputs-label {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-ember);
+  margin-bottom: var(--sp-4);
+}
+.detail-inputs-text {
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-obsidian);
+  line-height: var(--leading-body-sm);
+}
+
+/* Inputs needed badge on card */
+.card-inputs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: var(--sp-8);
+  padding: 4px 10px;
+  background: rgba(252, 80, 0, 0.08);
+  border: 1px solid rgba(252, 80, 0, 0.2);
+  border-radius: var(--radius-pills);
+  font-size: 0.75rem;
+  font-weight: var(--weight-medium);
+  color: var(--color-obsidian);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* Prompt box */
 .detail-prompt-box {
