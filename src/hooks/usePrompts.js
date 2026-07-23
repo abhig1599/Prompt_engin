@@ -8,6 +8,8 @@ const BUCKET_ID = import.meta.env.VITE_APPWRITE_BUCKET_ID;
 const TRASH_STORAGE_KEY = 'promptboard_trash_v1';
 const FAV_STORAGE_KEY   = 'promptboard_favs_v1';
 const TAGS_STORAGE_KEY  = 'promptboard_tags_v1';
+const INPUTS_STORAGE_KEY = 'promptboard_inputs_v1';
+const MY_PROMPTS_KEY    = 'promptboard_my_prompts_v1';
 const TRASH_TTL_DAYS    = 30;
 
 function load(key) {
@@ -15,6 +17,25 @@ function load(key) {
     const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : null;
   } catch { return null; }
+}
+
+function getMyPromptIds() {
+  try {
+    const raw = localStorage.getItem(MY_PROMPTS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function saveMyPromptId(id) {
+  try {
+    const current = getMyPromptIds() ?? [];
+    if (!current.includes(id)) {
+      current.push(id);
+      localStorage.setItem(MY_PROMPTS_KEY, JSON.stringify(current));
+    }
+  } catch (e) {
+    console.error('Error saving my prompt ID:', e);
+  }
 }
 
 function purgeExpiredTrash(trashList) {
@@ -33,13 +54,15 @@ function getFileUrl(fileId) {
   }
 }
 
-const mapDoc = (doc, favsMap = {}, tagsMap = {}) => ({
+const mapDoc = (doc, favsMap = {}, tagsMap = {}, inputsMap = {}, myPromptIds = []) => ({
   id: doc.$id,
   prompt: doc.content,
   image: doc.imageUrl,
   model: doc.model,
   tags: tagsMap[doc.$id] || [],
+  inputsNeeded: inputsMap[doc.$id] || doc.inputsNeeded || null,
   fav: !!favsMap[doc.$id],
+  isOwner: myPromptIds.includes(doc.$id),
   createdAt: doc.$createdAt
 });
 
@@ -62,7 +85,15 @@ export function usePrompts() {
       const res = await databases.listDocuments(DB_ID, COL_ID);
       const favsMap = load(FAV_STORAGE_KEY) ?? {};
       const tagsMap = load(TAGS_STORAGE_KEY) ?? {};
-      setPrompts(res.documents.map(doc => mapDoc(doc, favsMap, tagsMap)));
+      const inputsMap = load(INPUTS_STORAGE_KEY) ?? {};
+      
+      let myPromptIds = getMyPromptIds();
+      if (myPromptIds === null) {
+        myPromptIds = res.documents.map(doc => doc.$id);
+        localStorage.setItem(MY_PROMPTS_KEY, JSON.stringify(myPromptIds));
+      }
+
+      setPrompts(res.documents.map(doc => mapDoc(doc, favsMap, tagsMap, inputsMap, myPromptIds)));
     } catch (e) {
       console.error('Error loading prompts from Appwrite:', e);
     } finally {
@@ -90,15 +121,23 @@ export function usePrompts() {
     };
 
     const res = await databases.createDocument(DB_ID, COL_ID, ID.unique(), payload);
+    saveMyPromptId(res.$id);
 
+    const myPromptIds = getMyPromptIds() ?? [res.$id];
     const tagsMap = load(TAGS_STORAGE_KEY) ?? {};
     if (data.tags && data.tags.length > 0) {
       tagsMap[res.$id] = data.tags;
       localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(tagsMap));
     }
 
+    const inputsMap = load(INPUTS_STORAGE_KEY) ?? {};
+    if (data.inputsNeeded) {
+      inputsMap[res.$id] = data.inputsNeeded;
+      localStorage.setItem(INPUTS_STORAGE_KEY, JSON.stringify(inputsMap));
+    }
+
     const favsMap = load(FAV_STORAGE_KEY) ?? {};
-    const mapped = mapDoc(res, favsMap, tagsMap);
+    const mapped = mapDoc(res, favsMap, tagsMap, inputsMap, myPromptIds);
 
     setPrompts(prev => [mapped, ...prev]);
     return mapped;
@@ -136,8 +175,19 @@ export function usePrompts() {
       localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(tagsMap));
     }
 
+    const inputsMap = load(INPUTS_STORAGE_KEY) ?? {};
+    if (data.inputsNeeded !== undefined) {
+      if (data.inputsNeeded) {
+        inputsMap[id] = data.inputsNeeded;
+      } else {
+        delete inputsMap[id];
+      }
+      localStorage.setItem(INPUTS_STORAGE_KEY, JSON.stringify(inputsMap));
+    }
+
     const favsMap = load(FAV_STORAGE_KEY) ?? {};
-    const updated = mapDoc(res, favsMap, tagsMap);
+    const myPromptIds = getMyPromptIds() ?? [];
+    const updated = mapDoc(res, favsMap, tagsMap, inputsMap, myPromptIds);
 
     setPrompts(prev => prev.map(p => p.id === id ? updated : p));
     return updated;
@@ -145,7 +195,12 @@ export function usePrompts() {
 
   const softDelete = async (id) => {
     const target = prompts.find(p => p.id === id);
-    if (!target) return;
+    if (!target) return false;
+
+    if (target.isOwner === false) {
+      console.warn('Cannot delete prompt: User is not the creator.');
+      return false;
+    }
 
     try {
       await databases.deleteDocument(DB_ID, COL_ID, id);
@@ -156,6 +211,7 @@ export function usePrompts() {
     const trashed = { ...target, deletedAt: new Date().toISOString() };
     setTrash(t => [...t, trashed]);
     setPrompts(prev => prev.filter(p => p.id !== id));
+    return true;
   };
 
   const recoverPrompt = async (id) => {

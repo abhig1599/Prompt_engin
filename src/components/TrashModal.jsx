@@ -111,7 +111,12 @@ export default function TrashModal({ trash, onClose, onRecover, onPurge }) {
         <div className="trash-modal-body">
           {trash.length === 0 ? (
             <div className="trash-empty">
-              <div className="trash-empty-icon">🗑</div>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.4, marginBottom: '12px' }}>
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
               <h3 className="trash-empty-title">Your trash is clean</h3>
               <p className="trash-empty-sub">Deleted prompts will appear here for 30 days before being permanently removed.</p>
             </div>

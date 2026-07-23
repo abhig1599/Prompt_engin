@@ -46,7 +46,7 @@ export default function App() {
     setIsSaving(true);
     try {
       await addPrompt(data);
-      showToast('✦ Prompt saved to your board!');
+      showToast('Prompt saved to your board!');
     } catch (err) {
       console.error('Error saving prompt:', err);
     } finally {
@@ -56,19 +56,23 @@ export default function App() {
 
   const handleUpdate = useCallback(async (id, data) => {
     await updatePrompt(id, data);
-    showToast('✦ Prompt updated successfully!');
+    showToast('Prompt updated successfully!');
   }, [updatePrompt, showToast]);
 
   const handleFav = useCallback((id) => {
     const p = prompts.find(x => x.id === id);
     toggleFav(id);
-    showToast(p?.fav ? '♡ Removed from favorites' : '❤ Added to favorites');
+    showToast(p?.fav ? 'Removed from favorites' : 'Added to favorites');
   }, [prompts, toggleFav, showToast]);
 
-  const handleDelete = useCallback((id) => {
-    softDelete(id);
-    setDetailId(null);
-    showToast('Moved to Trash · Recoverable for 30 days');
+  const handleDelete = useCallback(async (id) => {
+    const success = await softDelete(id);
+    if (success !== false) {
+      setDetailId(null);
+      showToast('Moved to Trash · Recoverable for 30 days');
+    } else {
+      showToast('Only the creator of this prompt can delete it.');
+    }
   }, [softDelete, showToast]);
 
   const handleRecover = useCallback((id) => {
@@ -88,7 +92,6 @@ export default function App() {
       <Header
         filter={filter}
         setFilter={setFilter}
-        onAdd={() => setShowAdd(true)}
         onTrash={() => setShowTrash(true)}
         trashCount={trash.length}
       />
