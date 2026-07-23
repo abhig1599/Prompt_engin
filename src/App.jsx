@@ -14,7 +14,7 @@ import { useToast }   from './hooks/useToast';
 export default function App() {
   const [loading, setLoading] = useState(true);
 
-  const { prompts, trash, addPrompt, toggleFav, softDelete, recoverPrompt, purgeFromTrash } = usePrompts();
+  const { prompts, trash, addPrompt, updatePrompt, toggleFav, softDelete, recoverPrompt, purgeFromTrash } = usePrompts();
   const { toast, showToast } = useToast();
 
   const [filter,    setFilter]    = useState('all');
@@ -22,6 +22,7 @@ export default function App() {
   const [showAdd,   setShowAdd]   = useState(false);
   const [detailId,  setDetailId]  = useState(null);
   const [showTrash, setShowTrash] = useState(false);
+  const [isSaving,  setIsSaving]  = useState(false);
 
   const visible = useMemo(() => {
     let list = filter === 'fav' ? prompts.filter(p => p.fav) : prompts;
@@ -41,10 +42,22 @@ export default function App() {
     [prompts, detailId]
   );
 
-  const handleSave = useCallback((data) => {
-    addPrompt(data);
-    showToast('✦ Prompt saved to your board!');
+  const handleSave = useCallback(async (data) => {
+    setIsSaving(true);
+    try {
+      await addPrompt(data);
+      showToast('✦ Prompt saved to your board!');
+    } catch (err) {
+      console.error('Error saving prompt:', err);
+    } finally {
+      setIsSaving(false);
+    }
   }, [addPrompt, showToast]);
+
+  const handleUpdate = useCallback(async (id, data) => {
+    await updatePrompt(id, data);
+    showToast('✦ Prompt updated successfully!');
+  }, [updatePrompt, showToast]);
 
   const handleFav = useCallback((id) => {
     const p = prompts.find(x => x.id === id);
@@ -97,6 +110,7 @@ export default function App() {
           onCopy={showToast}
           onCardClick={setDetailId}
           onAdd={() => setShowAdd(true)}
+          isSaving={isSaving}
         />
       </div>
 
@@ -111,6 +125,7 @@ export default function App() {
           onFav={handleFav}
           onCopy={showToast}
           onDelete={handleDelete}
+          onUpdate={handleUpdate}
         />
       )}
 

@@ -1,5 +1,6 @@
 // src/components/Gallery.jsx — Caldera style
 import Card from './Card';
+import CardSkeleton from './CardSkeleton';
 
 function AddCard({ onAdd }) {
   return (
@@ -16,8 +17,8 @@ function AddCard({ onAdd }) {
   );
 }
 
-export default function Gallery({ prompts, onFav, onCopy, onCardClick, onAdd }) {
-  if (prompts.length === 0) {
+export default function Gallery({ prompts, onFav, onCopy, onCardClick, onAdd, isSaving }) {
+  if (prompts.length === 0 && !isSaving) {
     return (
       <div className="empty">
         <div className="empty-spark">CALDERA</div>
@@ -31,6 +32,7 @@ export default function Gallery({ prompts, onFav, onCopy, onCardClick, onAdd }) 
   return (
     <div className="gallery">
       <AddCard onAdd={onAdd} />
+      {isSaving && <CardSkeleton key="saving-skeleton" />}
       {[...prompts].reverse().map(p => (
         <Card
           key={p.id}
