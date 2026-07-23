@@ -9,6 +9,7 @@ export default function AddModal({ onClose, onSave }) {
   const [tags, setTags]         = useState('');
   const [model, setModel]       = useState('');
   const [image, setImage]       = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const backdropRef = useRef(null);
 
@@ -31,6 +32,7 @@ export default function AddModal({ onClose, onSave }) {
   const readFile = useCallback((file) => {
     if (!file) return;
     const reader = new FileReader();
+    setImageFile(file);
     reader.onload = (e) => setImage(e.target.result);
     reader.readAsDataURL(file);
   }, []);
@@ -47,6 +49,7 @@ export default function AddModal({ onClose, onSave }) {
     if (!prompt.trim()) return;
     onSave({
       prompt: prompt.trim(),
+      imageFile: imageFile,
       image:  image || null,
       tags:   tags.split(',').map(t => t.trim()).filter(Boolean),
       model:  model || null,
