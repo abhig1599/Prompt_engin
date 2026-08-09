@@ -3,13 +3,35 @@ import { useState, useMemo, useCallback } from 'react';
 import Header      from './components/Header';
 import SearchBar   from './components/SearchBar';
 import Gallery     from './components/Gallery';
-import AddModal    from './components/AddModal';
-import DetailModal from './components/DetailModal';
-import TrashModal  from './components/TrashModal';
-import Toast       from './components/Toast';
-import Loader      from './components/Loader';
-import { usePrompts } from './hooks/usePrompts';
-import { useToast }   from './hooks/useToast';
+import AddModal           from './components/AddModal';
+import DetailModal        from './components/DetailModal';
+import WebsiteDetailModal from './components/WebsiteDetailModal';
+import TrashModal         from './components/TrashModal';
+import Toast             from './components/Toast';
+import Loader            from './components/Loader';
+import BottomNav         from './components/BottomNav';
+import { usePrompts }    from './hooks/usePrompts';
+import { useToast }      from './hooks/useToast';
+
+function isWebsitePrompt(p) {
+  const text = (p.prompt || '').toLowerCase();
+  const tags = (p.tags || []).map(t => (t || '').toLowerCase());
+  const webKeywords = ['website', 'web', 'html', 'css', 'react', 'ui', 'ux', 'code', 'frontend', 'app', 'site', 'landing page', 'portfolio', 'dashboard', 'component'];
+  const hasWebTag = tags.some(t => webKeywords.some(k => t.includes(k)));
+  const hasWebText = webKeywords.some(k => text.includes(k));
+  return hasWebTag || hasWebText;
+}
+
+function matchesGalleryType(p, type) {
+  if (type === 'website') {
+    return isWebsitePrompt(p);
+  }
+  if (type === 'image') {
+    const isImageModel = ['midjourney', 'dall·e', 'dall-e', 'stable diffusion', 'adobe firefly', 'google imagen', 'flux', 'imagen'].some(m => (p.model || '').toLowerCase().includes(m));
+    return !!p.image || isImageModel || !isWebsitePrompt(p);
+  }
+  return true;
+}
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -17,15 +39,17 @@ export default function App() {
   const { prompts, trash, addPrompt, updatePrompt, toggleFav, softDelete, recoverPrompt, purgeFromTrash } = usePrompts();
   const { toast, showToast } = useToast();
 
-  const [filter,    setFilter]    = useState('all');
-  const [search,    setSearch]    = useState('');
-  const [showAdd,   setShowAdd]   = useState(false);
-  const [detailId,  setDetailId]  = useState(null);
-  const [showTrash, setShowTrash] = useState(false);
-  const [isSaving,  setIsSaving]  = useState(false);
+  const [filter,      setFilter]      = useState('all');
+  const [galleryType, setGalleryType] = useState('image');
+  const [search,      setSearch]      = useState('');
+  const [showAdd,     setShowAdd]     = useState(false);
+  const [detailId,    setDetailId]    = useState(null);
+  const [showTrash,   setShowTrash]   = useState(false);
+  const [isSaving,    setIsSaving]    = useState(false);
 
   const visible = useMemo(() => {
     let list = filter === 'fav' ? prompts.filter(p => p.fav) : prompts;
+    list = list.filter(p => matchesGalleryType(p, galleryType));
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(p =>
@@ -35,7 +59,7 @@ export default function App() {
       );
     }
     return list;
-  }, [prompts, filter, search]);
+  }, [prompts, filter, galleryType, search]);
 
   const detailPrompt = useMemo(
     () => prompts.find(p => p.id === detailId) ?? null,
@@ -46,17 +70,17 @@ export default function App() {
     setIsSaving(true);
     try {
       await addPrompt(data);
-      showToast('Prompt saved to your board!');
+      showToast(galleryType === 'website' ? 'Website saved to bookmarks!' : 'Prompt saved to your board!');
     } catch (err) {
       console.error('Error saving prompt:', err);
     } finally {
       setIsSaving(false);
     }
-  }, [addPrompt, showToast]);
+  }, [addPrompt, showToast, galleryType]);
 
   const handleUpdate = useCallback(async (id, data) => {
     await updatePrompt(id, data);
-    showToast('Prompt updated successfully!');
+    showToast('Updated successfully!');
   }, [updatePrompt, showToast]);
 
   const handleFav = useCallback((id) => {
@@ -71,13 +95,13 @@ export default function App() {
       setDetailId(null);
       showToast('Moved to Trash · Recoverable for 30 days');
     } else {
-      showToast('Only the creator of this prompt can delete it.');
+      showToast('Only the creator can delete this item.');
     }
   }, [softDelete, showToast]);
 
   const handleRecover = useCallback((id) => {
     recoverPrompt(id);
-    showToast('Prompt recovered to your board!');
+    showToast('Recovered to your board!');
   }, [recoverPrompt, showToast]);
 
   const handlePurge = useCallback((id) => {
@@ -99,12 +123,15 @@ export default function App() {
 
       <SearchBar value={search} onChange={setSearch} />
 
-      <div className="stats-strip">
+      <div className="stats-strip" style={{ display: 'flex', alignItems: 'center' }}>
         <p className="stats-count">
-          <strong>{visible.length}</strong> prompt{visible.length !== 1 ? 's' : ''}
+          <strong>{visible.length}</strong> {galleryType === 'website' ? 'website' : 'prompt'}{visible.length !== 1 ? 's' : ''}
+          {galleryType === 'image' ? ' · Image Gallery' : ' · Website Gallery'}
           {filter === 'fav' && ' · favorites'}
           {search && ` matching "${search}"`}
         </p>
+        {galleryType === 'website' && visible.length > 0 && (
+        )}
       </div>
 
       <div className="gallery-wrap">
@@ -115,22 +142,38 @@ export default function App() {
           onCardClick={setDetailId}
           onAdd={() => setShowAdd(true)}
           isSaving={isSaving}
+          galleryType={galleryType}
         />
       </div>
 
       {showAdd && (
-        <AddModal onClose={() => setShowAdd(false)} onSave={handleSave} />
+        <AddModal
+          onClose={() => setShowAdd(false)}
+          onSave={handleSave}
+          galleryType={galleryType}
+        />
       )}
 
       {detailPrompt && (
-        <DetailModal
-          prompt={detailPrompt}
-          onClose={() => setDetailId(null)}
-          onFav={handleFav}
-          onCopy={showToast}
-          onDelete={handleDelete}
-          onUpdate={handleUpdate}
-        />
+        galleryType === 'website' ? (
+          <WebsiteDetailModal
+            prompt={detailPrompt}
+            onClose={() => setDetailId(null)}
+            onFav={handleFav}
+            onCopy={showToast}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+          />
+        ) : (
+          <DetailModal
+            prompt={detailPrompt}
+            onClose={() => setDetailId(null)}
+            onFav={handleFav}
+            onCopy={showToast}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+          />
+        )
       )}
 
       {showTrash && (
@@ -141,6 +184,8 @@ export default function App() {
           onPurge={handlePurge}
         />
       )}
+
+      <BottomNav activeType={galleryType} onSelectType={setGalleryType} />
 
       <Toast msg={toast.msg} show={toast.show} />
 
