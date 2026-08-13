@@ -11,6 +11,7 @@ export { ID };
 export const config = {
   databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '',
   collectionId: process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_ID || '',
+  websitesCollectionId: process.env.NEXT_PUBLIC_APPWRITE_WEBSITES_COLLECTION_ID || '',
   bucketId: process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID || '',
 };
 
