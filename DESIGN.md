@@ -1,56 +1,42 @@
-# Firecrawl — Style Reference
-> Technical blueprint on warm vellum. A developer tool that swaps cold gray for a single burning orange signal, sitting on near-white surfaces stitched together by hairline grid lines.
+# Awwwards — Style Reference
+> Swiss editorial gallery wall — oversized type, full-bleed photography, and a single black floating rail to navigate.
 
 **Theme:** light
 
-Firecrawl operates as a developer-first workspace: a pale near-white canvas overlaid with a fine grid of hairline borders, a single vivid orange accent (#ff4d00) that acts as functional punctuation, and typography set in Suisse — a humanist grotesque whose tight tracking and generous x-height keep everything feeling engineered rather than editorial. Components are flat and quiet: pill-shaped controls (999px radius), 8px card corners, and shadow stacks that are barely perceptible (black at 2-3% alpha) so that depth comes from layering and the orange border-glow, not from drop shadows. The orange is never decorative — it appears on the CTA, the fire icon, highlight words in headlines, badge dots, and tab underlines. Everything else is a calibrated gray scale, with #e5e7eb doing the work of a thousand borders and #262626 carrying the full weight of body and heading text at AAA contrast against the off-white surfaces.
+Awwwards operates as a curatorial editorial surface: near-monochrome gallery where one massive typographic statement introduces each featured site, anchored by full-bleed hero photography and minimal navigational chrome. The palette is ruthlessly achromatic — ink-black text on a warm pale-gray canvas — letting featured website imagery and a single sparse orange accent carry all visual energy. Components are flat, weighty, and rectangular: 8px radii across most surfaces, a floating dark tab bar, pill buttons that read as labels rather than actions. Type drives hierarchy almost entirely; the 127px display weight at 300 whispers authority rather than shouting, and the same Inter Tight family renders everything from 9px metadata to gallery-scale titles with quiet consistency.
 
 ## Tokens — Colors
 
 | Name | Value | Token | Role |
 |------|-------|-------|------|
-| Ember Orange | `#ff4d00` | `--color-ember-orange` | Primary action background, accent text, highlight words in headlines, fire icon, active tab underline, badge dots, link strokes — the system's only chromatic signal |
-| Ember Glow (light) | `#fcddcc` | `--color-ember-glow-light` | Soft orange-tinted shadow halos behind orange buttons and badges, giving them a warm bloom without raising elevation |
-| Ember Wash (deep) | `#febec2` | `--color-ember-wash-deep` | Secondary warm-tinted shadow wash, used for outer glow rings on highlighted cards and code windows |
-| Gridline | `#e5e7eb` | `--color-gridline` | Dominant hairline border, card outlines, input strokes, code window dividers, grid background lines — the structural skeleton of every screen |
-| Ink | `#262626` | `--color-ink` | Primary text, heading fills, icon strokes, button text on light surfaces, code text |
-| Vellum | `#f9f9f9` | `--color-vellum` | Page and card background, the softest surface in the stack; inset shadow fields use a vellum-tinted ring to create depth without darkening |
-| Slate | `#727272` | `--color-slate` | Secondary text, muted body copy, placeholder labels, disabled-state copy |
-| Graphite | `#616161` | `--color-graphite` | Link text in body copy, supporting paragraphs, slightly lighter than Ink for inline emphasis |
-| Ash | `#949494` | `--color-ash` | Tertiary text, helper text, subtle icon strokes, caption-tier metadata |
-| Stone | `#c7c7c7` | `--color-stone` | Placeholder text in inputs and code blocks, very light body text where contrast is deliberately reduced |
-| Mist | `#b5b5b5` | `--color-mist` | Decorative strokes, faint dividers, background-pattern dots and crosses |
-| Pebble | `#838383` | `--color-pebble` | Muted button text on neutral surfaces, subtle UI labels |
+| Ink | `#222222` | `--color-ink` | Primary text, filled buttons (Be Pro), dark floating nav rail, icons, input borders, table borders |
+| Paper | `#ffffff` | `--color-paper` | Card surfaces, button labels, badge text, image backgrounds, content panels |
+| Canvas | `#e9e9e9` | `--color-canvas` | Page background, card borders, section fills — the warm gray that makes the whole surface feel printed rather than digital |
+| Fog | `#dedede` | `--color-fog` | Secondary borders, icon strokes, list dividers, subtle structural lines |
+| Smoke | `#808080` | `--color-smoke` | Table borders, hairline dividers, muted structural lines |
+| Graphite | `#4d4d4d` | `--color-graphite` | Secondary surfaces, link backgrounds in compact contexts, darker fills for nested elements |
+| Ash | `#b8b8b8` | `--color-ash` | Badge borders, low-emphasis outlines |
+| Ember | `#fa5d29` | `--color-ember` | Sporadic accent — appears as a single-color punctuation mark on rare UI elements and score indicators; the only chromatic color in the system, used sparingly to draw the eye |
 
 ## Tokens — Typography
 
-### Suisse — Primary interface and headline face. The 450 weight (a custom intermediate between regular and medium) is distinctive — it gives body text a slightly denser feel than a standard 400, and headings carry weight 500 for calm authority rather than boldness. Tracking tightens at display sizes (-0.01em at 60px, -0.005em at 40-52px) and opens slightly (+0.01-0.02em) at caption sizes for legibility. · `--font-suisse`
-- **Substitute:** Inter, Söhne, or Untitled Sans (close humanist grotesques with similar x-height and tracking behavior)
-- **Weights:** 400, 450, 500
-- **Sizes:** 10, 12, 13, 14, 15, 16, 20, 24, 40, 52, 60
-- **Line height:** 1.00, 1.07, 1.10, 1.20, 1.33, 1.40, 1.50, 1.60
-- **Letter spacing:** -0.01em at 60px, -0.005em at 40-52px, normal at 16-24px, +0.01em at 12-14px, +0.02em at 10-13px
-- **Role:** Primary interface and headline face. The 450 weight (a custom intermediate between regular and medium) is distinctive — it gives body text a slightly denser feel than a standard 400, and headings carry weight 500 for calm authority rather than boldness. Tracking tightens at display sizes (-0.01em at 60px, -0.005em at 40-52px) and opens slightly (+0.01-0.02em) at caption sizes for legibility.
-
-### Geist Mono — Code, technical labels, and any developer-facing micro-copy. Used for code blocks, tab labels in code-switcher UI, URL examples, and inline code snippets. Geist Mono's clean monospace geometry pairs with Suisse's humanist proportions without visual conflict. · `--font-geist-mono`
-- **Substitute:** JetBrains Mono, IBM Plex Mono, or Berkeley Mono
-- **Weights:** 400, 500
-- **Sizes:** 12, 13, 14
-- **Line height:** 1.33, 1.54, 1.57
-- **Letter spacing:** normal
-- **Role:** Code, technical labels, and any developer-facing micro-copy. Used for code blocks, tab labels in code-switcher UI, URL examples, and inline code snippets. Geist Mono's clean monospace geometry pairs with Suisse's humanist proportions without visual conflict.
+### Inter Tight — The sole typeface. Weight 300 at 127px with 0.75 line-height for the project display title — the condensed, light weight lets 'ODD RITUAL' occupy the full viewport width as a single typographic gesture. Weight 400 covers body, nav, badges. Weight 500–600 for buttons, labels, and emphasis. The extreme size range (9px metadata to 127px display) within one family creates a deliberate mono-typographic system where hierarchy is scale, not style. · `--font-inter-tight`
+- **Substitute:** Inter Tight (Google Fonts) or Inter as fallback
+- **Weights:** 300, 400, 500, 600
+- **Sizes:** 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 21, 22, 24, 32, 42, 127
+- **Line height:** 0.75, 0.93, 1.00, 1.10, 1.17, 1.20, 1.27, 1.29, 1.36, 1.44, 1.45, 1.50, 1.70, 1.75, 1.87, 2.00, 2.15, 2.40, 3.00
+- **Letter spacing:** normal at all sizes
+- **Role:** The sole typeface. Weight 300 at 127px with 0.75 line-height for the project display title — the condensed, light weight lets 'ODD RITUAL' occupy the full viewport width as a single typographic gesture. Weight 400 covers body, nav, badges. Weight 500–600 for buttons, labels, and emphasis. The extreme size range (9px metadata to 127px display) within one family creates a deliberate mono-typographic system where hierarchy is scale, not style.
 
 ### Type Scale
 
 | Role | Size | Line Height | Letter Spacing | Token |
 |------|------|-------------|----------------|-------|
-| caption | 10px | 1.5 | 0.2px | `--text-caption` |
 | body | 14px | 1.5 | — | `--text-body` |
-| heading-sm | 20px | 1.33 | — | `--text-heading-sm` |
-| heading | 24px | 1.2 | — | `--text-heading` |
-| heading-lg | 40px | 1.1 | -0.2px | `--text-heading-lg` |
-| display | 52px | 1.07 | -0.26px | `--text-display` |
-| display-xl | 60px | 1 | -0.6px | `--text-display-xl` |
+| heading-sm | 18px | 1.36 | — | `--text-heading-sm` |
+| heading | 24px | 1.29 | — | `--text-heading` |
+| heading-lg | 42px | 1.17 | — | `--text-heading-lg` |
+| display | 127px | 0.93 | — | `--text-display` |
 
 ## Tokens — Spacing & Shapes
 
@@ -70,198 +56,162 @@ Firecrawl operates as a developer-first workspace: a pale near-white canvas over
 | 24 | 24px | `--spacing-24` |
 | 28 | 28px | `--spacing-28` |
 | 32 | 32px | `--spacing-32` |
-| 40 | 40px | `--spacing-40` |
-| 48 | 48px | `--spacing-48` |
-| 56 | 56px | `--spacing-56` |
+| 36 | 36px | `--spacing-36` |
+| 52 | 52px | `--spacing-52` |
 | 60 | 60px | `--spacing-60` |
-| 64 | 64px | `--spacing-64` |
 | 72 | 72px | `--spacing-72` |
-| 164 | 164px | `--spacing-164` |
-| 188 | 188px | `--spacing-188` |
+| 200 | 200px | `--spacing-200` |
 
 ### Border Radius
 
 | Element | Value |
 |---------|-------|
-| tags | 999px |
-| cards | 16px |
-| icons | 999px |
-| inputs | 8px |
-| buttons | 999px |
-| code-windows | 8px |
-
-### Shadows
-
-| Name | Value | Token |
-|------|-------|-------|
-| subtle | `rgb(249, 249, 249) 0px 0px 0px 6px` | `--shadow-subtle` |
-| xl | `rgba(0, 0, 0, 0.02) 0px 40px 48px -20px, rgba(0, 0, 0, 0....` | `--shadow-xl` |
-| xl-2 | `rgba(0, 0, 0, 0.03) 0px 24px 32px -12px, rgba(0, 0, 0, 0....` | `--shadow-xl-2` |
-| subtle-2 | `color(display-p3 0.984314 0.984314 0.984314) 0px 0px 0px 8px` | `--shadow-subtle-2` |
-| subtle-3 | `rgb(253, 253, 253) 0px 0px 0px 8px` | `--shadow-subtle-3` |
-| xl-3 | `rgba(0, 0, 0, 0.02) 0px 0px 44px 0px, rgba(0, 0, 0, 0.03)...` | `--shadow-xl-3` |
+| cards | 8px |
+| badges | 4px |
+| images | 8px |
+| buttons | 8px |
+| featured-cards | 14px |
 
 ### Layout
 
-- **Page max-width:** 1200px
-- **Section gap:** 96px
-- **Card padding:** 24px
-- **Element gap:** 12px
+- **Section gap:** 48px
+- **Card padding:** 16-24px
+- **Element gap:** 8-12px
 
 ## Components
 
-### Primary CTA Button (Pill)
-**Role:** Filled orange pill button for highest-priority actions (Sign up, Get started)
+### Display Project Title
+**Role:** Featured site name in the hero
 
-Background #ff4d00, text #ffffff, font Suisse 14px weight 500, letter-spacing +0.01em. Padding 10px 18px. Radius 999px. Wrapped in a soft outer glow: box-shadow using #fcddcc at 0px 0px 0px 6px, creating a warm bloom without a hard drop shadow. No border.
+Inter Tight 127px weight 300, color #222222, line-height 0.93, centered. Spans nearly the full viewport width. This is the page's typographic anchor — it should be the only element competing with the hero image for attention.
 
-### Ghost Nav Button
-**Role:** Header action button for secondary navigation (GitHub star count, Sign in)
+### Top Navigation Bar
+**Role:** Primary site navigation
 
-Transparent background, text #262626, font Suisse 14px weight 500. Padding 8px 12px. Radius 999px. Hover: light Vellum (#f9f9f9) background fill. No border by default.
+Transparent/canvas background. Logo 'W.' left, nav links (Explore, Directory, Academy, Jobs, Market) in Inter Tight 13–14px weight 500 #222222, search bar centered (rounded, #e9e9e9 background, #222222 text), auth actions right. Flat, no border, no shadow. Sits directly on the warm gray canvas.
 
-### Code Tab Pill
-**Role:** Language selector in the embedded code block (Python, Node.js, cURL, CLI)
+### Filled CTA Button (Be Pro)
+**Role:** Primary conversion action
 
-Background transparent, text #727272, font Geist Mono 13px weight 500. Padding 6px 12px. Radius 999px. Active state: background #262626, text #ffffff. Inactive tabs separated by 2px gap.
+Background #222222, text #ffffff, Inter Tight 13–14px weight 500, 8px radius, padding 8px 16px. No border, no shadow. Dark-on-dark text contrast within the component, high contrast against the canvas.
 
-### Search/Scrape Input Bar
-**Role:** Hero interaction: URL input with action buttons
+### Outlined Button (Submit Website)
+**Role:** Secondary action
 
-Container: white #ffffff background, border 1px #e5e7eb, radius 999px, padding 8px 8px 8px 20px. URL input: font Suisse 14px, placeholder #c7c7c7, no border. Inline action chips (Search, Scrape, Map, Crawl): Geist Mono 13px, text #262626, each in its own pill with #f9f9f9 background and radius 999px. Trailing submit button: #ff4d00 background, white text, radius 999px, 36px square, containing a right-arrow icon. Overall shadow: faint vellum ring (rgb(249,249,249) 0px 0px 0px 6px) for depth.
+Transparent background, 1px border #222222, text #222222, 8px radius, padding 8px 16px. Same dimensions as filled variant — they are a matched pair.
 
-### Feature Card (Centered Icon)
-**Role:** Three-column feature card (Search, Scrape, Interact)
+### Floating Tab Bar
+**Role:** Section navigation overlaid on hero content
 
-Background #f9f9f9, border 1px #e5e7eb, radius 16px, padding 32px 24px. Centered orange icon (#ff4d00, stroke-based) at 24px size inside a 40px circle. Title: Suisse 16px weight 500, #262626, centered. Description: Suisse 14px weight 400, #727272, centered. Three cards in a row separated by 24px gap.
+Dark pill-shaped bar with background #222222, 14px radius, horizontally centered over the hero. Contains text tabs (Nominees, Courses, Collections, Directory, Market) in #ffffff at 12–13px, plus a white 'Visit Site' button (#ffffff background, #222222 text, 8px radius) as the terminal action. Floats above content with no shadow — relies on contrast, not elevation.
 
-### Code Window
-**Role:** Embedded code editor showing API usage example
+### Search Input
+**Role:** Site search
 
-Background #f9f9f9, border 1px #e5e7eb, radius 8px. Header bar: 40px tall, contains 3 traffic-light dots (6px, #e5e7eb) left-aligned, Geist Mono 12px filename center, copy-code button right-aligned with #f9f9f9 background and #262626 text. Body: Geist Mono 13px weight 400, line-height 1.57, padding 20px. Line numbers: Geist Mono 12px, #b5b5b5, right-aligned. Syntax: #262626 default, #ff4d00 for keywords/strings, #616161 for comments. Outer shadow: rgb(253,253,253) 0px 0px 0px 8px for ambient depth.
+Background #e9e9e9 or #ffffff, border 1px #dedede, 8px radius, Inter Tight 13px placeholder text. Compact, sits inline with nav. No focus ring detected — keep minimal.
 
-### Announcement Banner
-**Role:** Top-of-page promotional bar (orange background)
+### Score Badge (New)
+**Role:** Label for new or featured content
 
-Full-width, background #ff4d00, text #ffffff, font Suisse 14px weight 500, centered. Padding 10px 16px. Contains inline link with underline. No border or radius. Appears flush above the nav.
+Background #222222, text #ffffff, Inter Tight 10–11px weight 600, 4px radius, padding 2px 6px. Small, rectangular, sits inline next to the label it qualifies (e.g. 'Academy [New]').
 
-### Logo Cloud Card
-**Role:** Horizontal row of partner/company logos
+### Project Hero Image
+**Role:** Full-bleed featured site screenshot
 
-Each logo sits in a #f9f9f9 card with 1px #e5e7eb border, radius 8px, padding 24px. Logos rendered in #262626 monochrome. Cards are full-height and equal-width across the row, separated by 1px borders that form a continuous grid effect. Left side has a 2-line label in Suisse 14px (#262626 with #ff4d00 for the number).
+Large photograph or screenshot, 8px radius, full viewport width minus page margins. Contains overlay text elements (e.g. '01', '05', 'Scroll', 'SHOP NOW EXPLORE OUR FIRST COLLECTION') rendered directly on the image in Inter Tight — the image IS the editorial surface.
 
-### Section Header (Numbered)
-**Role:** Section divider with index and label (e.g. "01 / MAIN FEATURES")
+### Author Attribution
+**Role:** Credit featured site creators
 
-Layout: orange 4px dot + Geist Mono 12px #727272 index + "/" separator + uppercase Geist Mono 12px #727272 label. Left-aligned with a 2px orange vertical line. Followed by large display heading (Suisse 40-52px, #262626, weight 500) with optional orange highlight words.
+Inter Tight 13–14px weight 400 #222222, centered below the display title. Avatar circle (small, ~24px) with name, optional 'PRO' label. Compact, single-line, low visual weight.
 
-### Pill Badge (Tag)
-**Role:** Small status or feature tags (e.g. "NEW")
+### Metadata Row
+**Role:** Contextual info above the display title
 
-Background #ff4d00, text #ffffff, font Suisse 12px weight 500, letter-spacing +0.01em. Padding 2px 8px. Radius 999px. No border.
+Three items inline: label ('Site of the Day'), date ('Apr 11, 2026'), score ('Score 7.55 of 10'). Inter Tight 11–12px weight 400, separated by spacing. Ember (#fa5d29) may appear here for the score value.
 
-### Action Card Button (Scraping Selector)
-**Role:** Inline action chip within the hero input (Search/Scrape/Map/Crawl)
+### Editorial Overlay Text
+**Role:** Large text placed on hero imagery
 
-Background #f9f9f9, text #262626, font Geist Mono 13px weight 500. Padding 4px 10px. Radius 999px. Small left icon (12px) in #727272. Gap between chips: 4px.
+Inter Tight weight 300–400, 32–42px, #ffffff or #222222 depending on image contrast. Examples: 'SHOP NOW EXPLORE OUR FIRST COLLECTION'. Treated as part of the image composition, not UI chrome.
 
-### Elevated Card (Marketing)
-**Role:** Prominent content card with multi-layer shadow stack
+### Section Heading (NOMINEES)
+**Role:** Section divider title
 
-Background #ffffff, border 1px #e5e7eb, radius 16px, padding 32px. Shadow stack: rgba(0,0,0,0.02) 0px 40px 48px -20px, rgba(0,0,0,0.03) 0px 32px 32px -20px, rgba(0,0,0,0.03) 0px 16px 24px -12px, rgba(0,0,0,0.03) 0px 0px 0px 1px — creates a gentle lift without darkening the card itself. Used sparingly for hero-adjacent promotional cards.
-
-### Navigation Bar
-**Role:** Sticky top navigation header
-
-Background white, height ~64px, padding 0 24px. Left: fire icon logo (orange #ff4d00) + wordmark "Firecrawl" in Suisse 15px weight 500 #262626. Center: nav items in Suisse 14px weight 500 #262626, each with a chevron-down icon for dropdowns, 24px gap. Right: GitHub star count in Geist Mono 13px #262626 (255 label suffix in Slate #727272) + orange Sign up pill button. Border-bottom 1px #e5e7eb.
-
-### World Map Background
-**Role:** Decorative dot-map behind section headers
-
-Full-width, height ~400px, composed of tiny #e5e7eb dots forming a world map silhouette. No labels or interactivity. Provides geographic atmosphere without competing with foreground text.
+Inter Tight 42–64px weight 300–400, #222222, centered. Acts as a typographic full-stop between editorial sections — the 'Latest' label sits above in 11–12px as a kicker.
 
 ## Do's and Don'ts
 
 ### Do
-- Use #ff4d00 exclusively for functional emphasis: CTA fills, active states, highlight words in headlines, badge dots, and the fire icon. Never use it for large decorative areas.
-- Set body text at 14px Suisse weight 400 and reserve weight 500 for headings and interactive elements — the 450 weight is not used in interface copy.
-- Apply 999px radius to all buttons, tags, and interactive pills; use 8px for inputs and code windows; use 16px for cards. Never mix these tiers.
-- Use #e5e7eb 1px borders as the primary visual structure — they do the work that shadows would in other systems.
-- Pair Suisse for prose with Geist Mono for any technical content (code, URLs, API names, file paths) to create a clear semantic split between documentation and copy.
-- Tighten letter-spacing on display sizes (-0.005em at 40-52px, -0.01em at 60px) and open it on small sizes (+0.01-0.02em below 14px) — do not apply uniform tracking.
-- Keep shadow stacks at 2-3% black alpha; depth comes from layering and ambient rings (rgb(249,249,249) 0px 0px 0px 6px), never from heavy drop shadows.
+- Use Inter Tight weight 300 at 100–127px for any display/project title — the light weight is the signature, not bold
+- Set 8px border-radius on all buttons, cards, badges, and images; use 14px only on featured/large cards, 4px on small inline badges
+- Keep the palette 95% achromatic — Ink (#222222), Paper (#ffffff), Canvas (#e9e9e9), Fog (#dedede) — and reserve Ember (#fa5d29) for single-element punctuation
+- Use 0.93–1.0 line-height on display sizes (42px and above) to let oversized type feel architectural rather than airy
+- Place text directly on hero photography as editorial overlay — don't wrap images in card containers
+- Match filled and outlined button pairs at identical padding (8px 16px) and radius (8px) so they read as one system
+- Use 8px as the base gap between elements; jump to 24px or 48px for section separation, skip the in-between
 
 ### Don't
-- Don't introduce any chromatic color other than #ff4d00. Greens, blues, and purples are absent from the palette by design.
-- Don't use filled colored backgrounds for large surface areas. Orange belongs on small interactive elements, not on section backgrounds or hero washes.
-- Don't use sharp corners (0-4px radius) on buttons or tags. The pill shape is a core identity signal.
-- Don't apply shadows with dark alpha above 5%. The system is deliberately flat — aggressive shadows break the blueprint feel.
-- Don't use the 450 weight in headings. Headings are weight 500; the intermediate weight is only for body emphasis in long-form prose.
-- Don't use color to convey hierarchy in body text. Hierarchy comes from weight (400 vs 500), size, and the Slate→Ink gray gradient (#727272→#262626).
-- Don't place text directly on the dot/grid background without a card or surface layer — the gridlines are structural, not a backdrop for copy.
+- Don't introduce color beyond Ember — no blues, greens, or multi-color accent systems. The achromatic discipline IS the brand
+- Don't use weight 700+ for titles. The system is anti-bold; weight 300 at extreme sizes is the voice
+- Don't add box-shadows to cards or buttons. Elevation comes from color contrast against the warm gray canvas, not drop shadows
+- Don't use border-radius values other than 4px, 8px, or 14px — the system has exactly three radii and they map to specific element types
+- Don't constrain the hero to a max-width. Project displays and hero images are full-bleed; the page is a gallery wall, not a centered document
+- Don't use gradients on any UI element. The palette is flat — gradients dilute the editorial clarity
+- Don't set body text below 11px or above 16px. The type system has a tight body range; everything else is display or metadata
 
 ## Surfaces
 
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
-| 0 | Canvas | `#ffffff` | Base page background, cleanest surface |
-| 1 | Vellum | `#f9f9f9` | Card surfaces, code windows, subtle elevation from canvas |
-| 2 | Gridline | `#e5e7eb` | Hairline borders, grid pattern lines, dividers |
-| 3 | Shadow Tint | `#fcddcc` | Warm ambient shadow ring around orange elements |
+| 0 | Canvas | `#e9e9e9` | Page background — the warm gray foundation |
+| 1 | Paper | `#ffffff` | Card surfaces, content blocks, raised panels |
+| 2 | Ink | `#222222` | Dark floating nav rail, filled buttons, inverse surfaces |
+| 3 | Graphite | `#4d4d4d` | Nested dark elements, secondary inverse fills |
 
 ## Elevation
 
-- **Elevated marketing card:** `rgba(0, 0, 0, 0.02) 0px 40px 48px -20px, rgba(0, 0, 0, 0.03) 0px 32px 32px -20px, rgba(0, 0, 0, 0.03) 0px 16px 24px -12px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px`
-- **Medium card lift:** `rgba(0, 0, 0, 0.03) 0px 24px 32px -12px, rgba(0, 0, 0, 0.03) 0px 16px 24px -8px, rgba(0, 0, 0, 0.03) 0px 8px 16px -4px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px`
-- **Orange button glow:** `0 0 0 6px #fcddcc`
-- **Ambient vellum ring:** `rgb(249, 249, 249) 0px 0px 0px 6px`
+- **Floating Tab Bar:** `none — relies on color contrast against the hero image, not shadow`
+- **Cards:** `none — flat against the warm gray canvas`
+- **Buttons:** `none — flat surfaces, contrast carries hierarchy`
 
 ## Imagery
 
-The visual language is nearly entirely text and UI — no photography, no illustration, no 3D. The only graphical elements are: (1) a subtle dot/grid pattern that tiles the hero background in #e5e7eb, reading as engineering graph paper; (2) a dotted world-map silhouette (#e5e7eb dots on white) behind section headers; (3) the fire icon logo in solid #ff4d00; (4) stroke-based orange icons inside feature cards (search/scraping/AI glyphs). The code window UI itself functions as a visual element — the embedded Python/Node.js code block is rendered as a realistic editor with traffic-light dots, line numbers, and syntax highlighting, making the product's technical capability the primary visual proof. All imagery is monochrome or single-color; no gradients, no multicolor illustrations, no photographic content anywhere.
+The site is image-forward in an editorial, not marketing, way. Full-bleed photography dominates: large editorial shots of designers, studio scenes, and lifestyle imagery that contextualize each featured website's creators. Photography treatment is naturalistic — warm, slightly muted color grading, no heavy filters or duotones. The images serve as canvases for overlaid display type rather than as decorative accents. No illustrations, no abstract graphics, no 3D renders. Icon style is minimal: small monoline icons in #222222 with ~1.5px stroke weight, used sparingly for nav and UI controls. The overall density is image-dominant in the hero region, text-dominant in navigation and metadata areas.
 
 ## Layout
 
-Max-width 1200px centered container, but hero and decorative bands extend full-bleed. Navigation is a sticky top bar with center-aligned product links. The hero is a centered stack: announcement banner → nav → badge → oversized display headline (52-60px) with one orange highlight phrase → 2-line subhead at 16px → URL input with action chips. Below the hero, the page alternates between: (1) a 3-column feature card grid with equal-width cards separated by #e5e7eb borders; (2) a full-bleed code-window section showing a 2-column split (code left, output right) with a language tab switcher floating above; (3) a logo cloud in a single horizontal row of 5-6 equal cells; (4) a dot-map section header with a large centered display heading below. Section gaps are generous (80-120px). The grid is always 3-column at desktop for feature cards, and the overall rhythm is vertical-stack with centered content rather than asymmetric or zig-zag.
+Full-bleed editorial layout with no max-width constraint on the canvas. The page is a vertical sequence of full-viewport editorial moments: (1) top nav bar sitting directly on the warm gray canvas, (2) centered metadata + massive display title + author credits, (3) full-bleed hero photograph with floating dark tab bar overlay and editorial text burned into the image, (4) 'Latest' section with large typographic section header. Navigation is a single top bar with inline search. The floating dark tab bar (Nominees, Courses, etc.) persists over hero content and provides section switching without traditional nav. Section rhythm is generous — 48px+ between editorial moments — with the typographic scale providing separation rather than visual dividers or colored bands. Content is centered within the full-bleed canvas; there is no asymmetric grid in the editorial hero zone.
 
 ## Agent Prompt Guide
 
-## Quick Color Reference
-- Page background: #ffffff
-- Card/code surface: #f9f9f9
-- Primary text: #262626
-- Secondary/muted text: #727272
-- Border/gridline: #e5e7eb
-- primary action: #ff4d00 (filled action)
-- Brand glow/halo: #fcddcc
+**Quick Color Reference**
+- text: #222222 (Ink)
+- background (page): #e9e9e9 (Canvas)
+- surface (card): #ffffff (Paper)
+- border: #dedede (Fog)
+- accent: #fa5d29 (Ember) — use sparingly
+- primary action: no distinct CTA color
 
-## 5 Example Component Prompts
+**Example Component Prompts**
 
-1. Create a Primary Action Button: #ff4d00 background, #262626 text, 9999px radius, compact pill padding. Use this filled treatment for the main CTA.
+1. Create a project hero title: Inter Tight 127px, weight 300, #222222, line-height 0.93, centered. Below it, an author row with two 24px circular avatars, names in 13px weight 400, and a small 'PRO' badge (#222222 bg, #ffffff text, 4px radius, 2px 6px padding).
 
-2. **Search input bar**: White background, 1px #e5e7eb border, border-radius 999px, padding 8px 8px 8px 20px. Contains a URL input (Suisse 14px, placeholder #c7c7c7) followed by inline action chips (Geist Mono 13px #262626 on #f9f9f9, radius 999px, 4px gaps) and a trailing 36px square #ff4d00 submit button with a white arrow icon. Outer ring: box-shadow rgb(249,249,249) 0px 0px 0px 6px.
+2. Create a floating section nav bar: centered, ~600px wide, background #222222, 14px radius, padding 8px. Contains five text tabs in #ffffff 13px weight 500 (8px gap) and a terminal white button (#ffffff bg, #222222 text, 8px radius, 8px 16px padding) reading 'Visit Site'.
 
-3. **Feature card**: Background #f9f9f9, border 1px #e5e7eb, border-radius 16px, padding 32px 24px, text centered. Orange stroke icon (24px) inside a 40px circle at top. Title in Suisse 16px weight 500 #262626. Description in Suisse 14px weight 400 #727272.
+3. Create a full-bleed hero image section: viewport-width image with 8px radius, containing overlaid white text 'SHOP NOW EXPLORE OUR FIRST COLLECTION' in Inter Tight 42px weight 300, positioned bottom-left, and a small 'Scroll' indicator top-right in 11px italic.
 
-4. **Code window**: Background #f9f9f9, border 1px #e5e7eb, border-radius 8px. Header bar 40px tall with 3 #e5e7eb traffic-light dots (6px) and Geist Mono 12px filename centered. Body padding 20px, Geist Mono 13px weight 400 line-height 1.57, line numbers in #b5b5b5 right-aligned. Syntax: #262626 default, #ff4d00 for keywords/strings, #616161 for comments. Outer shadow: rgb(253,253,253) 0px 0px 0px 8px.
+4. Create a metadata row: three inline items in Inter Tight 11px weight 400 #222222 — 'Site of the Day' | 'Apr 11, 2026' | 'Score 7.55 of 10' — separated by 12px gaps, centered above the display title.
 
-5. **Section header (numbered)**: Layout left-aligned with 2px #ff4d00 vertical line. Orange 4px dot, then Geist Mono 12px #727272 text: "01 / MAIN FEATURES". Below, display heading in Suisse 52px weight 500 #262626, letter-spacing -0.26px, line-height 1.07, with one phrase in #ff4d00.
-
-## Orange Discipline
-
-The single most important rule in this system: #ff4d00 is rationed. It appears on approximately 3-4 element types per page — the primary CTA, the fire icon, 1-2 highlight words in the headline, and occasionally a badge or active-tab indicator. It never fills large surfaces, never appears in illustrations, and never tints background sections. The restraint is what makes it feel intentional rather than branded. When in doubt, use #262626.
-
-## Typography Pairing Logic
-
-Suisse carries all human-facing copy: headlines, body, nav, buttons, card titles. Geist Mono appears the moment content becomes technical: code blocks, API examples, file names, URL strings, language switcher tabs. The split is binary — if a string could appear in a README, it should be mono. If it could appear in a brochure, it's Suisse. This binary creates a clear developer-first voice without needing additional visual cues.
+5. Create a featured card: #ffffff background, 8px radius, 24px padding, containing a 16:9 image (8px radius), a title in Inter Tight 18px weight 600 #222222, and a one-line description in 14px weight 400 #222222. No shadow, no border.
 
 ## Similar Brands
 
-- **Vercel** — Same monochrome light surface with a single black-accented UI, Suisse-adjacent grotesque typography, and pill-shaped controls; differs in using black instead of orange for emphasis
-- **Linear** — Same minimal light-mode workspace with hairline #e5e7eb borders doing structural work and flat components; differs in tighter density and purple accent
-- **Modal** — Same developer-first aesthetic with monospace code windows, clean grotesque type, and a single warm accent color; differs in more compact information density
-- **Resend** — Same off-white canvas with hairline grid lines, warm single-color accent (Resend uses a similar warm tone), and embedded code-as-hero pattern
-- **Render** — Same light developer-tooling language with pill buttons, generous section gaps, and a single chromatic accent against near-white surfaces
+- **It's Nice That** — Same editorial gallery approach with oversized light-weight display type, full-bleed creative photography, and near-zero chromatic color
+- **SiteInspire** — Curatorial web design showcase with similar monochrome restraint, single-typeface system, and typography-driven hierarchy
+- **Minimal Gallery (Cargo)** — Portfolio/showcase aesthetic with full-bleed imagery, minimal UI chrome, and warm gray canvas backgrounds
+- **The Browser Company** — Dark floating nav elements paired with light content surfaces, and a typographic-forward layout that lets content breathe
+- **Kottke.org** — Dense editorial single-column layout with minimal color, where typography size (not color or weight) creates the visual rhythm
 
 ## Quick Start
 
@@ -270,47 +220,35 @@ Suisse carries all human-facing copy: headlines, body, nav, buttons, card titles
 ```css
 :root {
   /* Colors */
-  --color-ember-orange: #ff4d00;
-  --color-ember-glow-light: #fcddcc;
-  --color-ember-wash-deep: #febec2;
-  --color-gridline: #e5e7eb;
-  --color-ink: #262626;
-  --color-vellum: #f9f9f9;
-  --color-slate: #727272;
-  --color-graphite: #616161;
-  --color-ash: #949494;
-  --color-stone: #c7c7c7;
-  --color-mist: #b5b5b5;
-  --color-pebble: #838383;
+  --color-ink: #222222;
+  --color-paper: #ffffff;
+  --color-canvas: #e9e9e9;
+  --color-fog: #dedede;
+  --color-smoke: #808080;
+  --color-graphite: #4d4d4d;
+  --color-ash: #b8b8b8;
+  --color-ember: #fa5d29;
 
   /* Typography — Font Families */
-  --font-suisse: 'Suisse', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-inter-tight: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 10px;
-  --leading-caption: 1.5;
-  --tracking-caption: 0.2px;
   --text-body: 14px;
   --leading-body: 1.5;
-  --text-heading-sm: 20px;
-  --leading-heading-sm: 1.33;
+  --text-heading-sm: 18px;
+  --leading-heading-sm: 1.36;
   --text-heading: 24px;
-  --leading-heading: 1.2;
-  --text-heading-lg: 40px;
-  --leading-heading-lg: 1.1;
-  --tracking-heading-lg: -0.2px;
-  --text-display: 52px;
-  --leading-display: 1.07;
-  --tracking-display: -0.26px;
-  --text-display-xl: 60px;
-  --leading-display-xl: 1;
-  --tracking-display-xl: -0.6px;
+  --leading-heading: 1.29;
+  --text-heading-lg: 42px;
+  --leading-heading-lg: 1.17;
+  --text-display: 127px;
+  --leading-display: 0.93;
 
   /* Typography — Weights */
+  --font-weight-light: 300;
   --font-weight-regular: 400;
-  --font-weight-w450: 450;
   --font-weight-medium: 500;
+  --font-weight-semibold: 600;
 
   /* Spacing */
   --spacing-unit: 4px;
@@ -322,49 +260,34 @@ Suisse carries all human-facing copy: headlines, body, nav, buttons, card titles
   --spacing-24: 24px;
   --spacing-28: 28px;
   --spacing-32: 32px;
-  --spacing-40: 40px;
-  --spacing-48: 48px;
-  --spacing-56: 56px;
+  --spacing-36: 36px;
+  --spacing-52: 52px;
   --spacing-60: 60px;
-  --spacing-64: 64px;
   --spacing-72: 72px;
-  --spacing-164: 164px;
-  --spacing-188: 188px;
+  --spacing-200: 200px;
 
   /* Layout */
-  --page-max-width: 1200px;
-  --section-gap: 96px;
-  --card-padding: 24px;
-  --element-gap: 12px;
+  --section-gap: 48px;
+  --card-padding: 16-24px;
+  --element-gap: 8-12px;
 
   /* Border Radius */
+  --radius-md: 4px;
   --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
-  --radius-2xl-2: 20px;
-  --radius-full: 999px;
+  --radius-xl: 14px;
 
   /* Named Radii */
-  --radius-tags: 999px;
-  --radius-cards: 16px;
-  --radius-icons: 999px;
-  --radius-inputs: 8px;
-  --radius-buttons: 999px;
-  --radius-code-windows: 8px;
-
-  /* Shadows */
-  --shadow-subtle: rgb(249, 249, 249) 0px 0px 0px 6px;
-  --shadow-xl: rgba(0, 0, 0, 0.02) 0px 40px 48px -20px, rgba(0, 0, 0, 0.03) 0px 32px 32px -20px, rgba(0, 0, 0, 0.03) 0px 16px 24px -12px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px;
-  --shadow-xl-2: rgba(0, 0, 0, 0.03) 0px 24px 32px -12px, rgba(0, 0, 0, 0.03) 0px 16px 24px -8px, rgba(0, 0, 0, 0.03) 0px 8px 16px -4px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px;
-  --shadow-subtle-2: color(display-p3 0.984314 0.984314 0.984314) 0px 0px 0px 8px;
-  --shadow-subtle-3: rgb(253, 253, 253) 0px 0px 0px 8px;
-  --shadow-xl-3: rgba(0, 0, 0, 0.02) 0px 0px 44px 0px, rgba(0, 0, 0, 0.03) 0px 88px 56px -20px, rgba(0, 0, 0, 0.02) 0px 56px 56px -20px, rgba(0, 0, 0, 0.03) 0px 32px 32px -20px, rgba(0, 0, 0, 0.03) 0px 16px 24px -12px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(249, 249, 249) 0px 0px 0px 10px;
+  --radius-cards: 8px;
+  --radius-badges: 4px;
+  --radius-images: 8px;
+  --radius-buttons: 8px;
+  --radius-featured-cards: 14px;
 
   /* Surfaces */
-  --surface-canvas: #ffffff;
-  --surface-vellum: #f9f9f9;
-  --surface-gridline: #e5e7eb;
-  --surface-shadow-tint: #fcddcc;
+  --surface-canvas: #e9e9e9;
+  --surface-paper: #ffffff;
+  --surface-ink: #222222;
+  --surface-graphite: #4d4d4d;
 }
 ```
 
@@ -373,42 +296,29 @@ Suisse carries all human-facing copy: headlines, body, nav, buttons, card titles
 ```css
 @theme {
   /* Colors */
-  --color-ember-orange: #ff4d00;
-  --color-ember-glow-light: #fcddcc;
-  --color-ember-wash-deep: #febec2;
-  --color-gridline: #e5e7eb;
-  --color-ink: #262626;
-  --color-vellum: #f9f9f9;
-  --color-slate: #727272;
-  --color-graphite: #616161;
-  --color-ash: #949494;
-  --color-stone: #c7c7c7;
-  --color-mist: #b5b5b5;
-  --color-pebble: #838383;
+  --color-ink: #222222;
+  --color-paper: #ffffff;
+  --color-canvas: #e9e9e9;
+  --color-fog: #dedede;
+  --color-smoke: #808080;
+  --color-graphite: #4d4d4d;
+  --color-ash: #b8b8b8;
+  --color-ember: #fa5d29;
 
   /* Typography */
-  --font-suisse: 'Suisse', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-inter-tight: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 10px;
-  --leading-caption: 1.5;
-  --tracking-caption: 0.2px;
   --text-body: 14px;
   --leading-body: 1.5;
-  --text-heading-sm: 20px;
-  --leading-heading-sm: 1.33;
+  --text-heading-sm: 18px;
+  --leading-heading-sm: 1.36;
   --text-heading: 24px;
-  --leading-heading: 1.2;
-  --text-heading-lg: 40px;
-  --leading-heading-lg: 1.1;
-  --tracking-heading-lg: -0.2px;
-  --text-display: 52px;
-  --leading-display: 1.07;
-  --tracking-display: -0.26px;
-  --text-display-xl: 60px;
-  --leading-display-xl: 1;
-  --tracking-display-xl: -0.6px;
+  --leading-heading: 1.29;
+  --text-heading-lg: 42px;
+  --leading-heading-lg: 1.17;
+  --text-display: 127px;
+  --leading-display: 0.93;
 
   /* Spacing */
   --spacing-4: 4px;
@@ -419,28 +329,15 @@ Suisse carries all human-facing copy: headlines, body, nav, buttons, card titles
   --spacing-24: 24px;
   --spacing-28: 28px;
   --spacing-32: 32px;
-  --spacing-40: 40px;
-  --spacing-48: 48px;
-  --spacing-56: 56px;
+  --spacing-36: 36px;
+  --spacing-52: 52px;
   --spacing-60: 60px;
-  --spacing-64: 64px;
   --spacing-72: 72px;
-  --spacing-164: 164px;
-  --spacing-188: 188px;
+  --spacing-200: 200px;
 
   /* Border Radius */
+  --radius-md: 4px;
   --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
-  --radius-2xl-2: 20px;
-  --radius-full: 999px;
-
-  /* Shadows */
-  --shadow-subtle: rgb(249, 249, 249) 0px 0px 0px 6px;
-  --shadow-xl: rgba(0, 0, 0, 0.02) 0px 40px 48px -20px, rgba(0, 0, 0, 0.03) 0px 32px 32px -20px, rgba(0, 0, 0, 0.03) 0px 16px 24px -12px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px;
-  --shadow-xl-2: rgba(0, 0, 0, 0.03) 0px 24px 32px -12px, rgba(0, 0, 0, 0.03) 0px 16px 24px -8px, rgba(0, 0, 0, 0.03) 0px 8px 16px -4px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px;
-  --shadow-subtle-2: color(display-p3 0.984314 0.984314 0.984314) 0px 0px 0px 8px;
-  --shadow-subtle-3: rgb(253, 253, 253) 0px 0px 0px 8px;
-  --shadow-xl-3: rgba(0, 0, 0, 0.02) 0px 0px 44px 0px, rgba(0, 0, 0, 0.03) 0px 88px 56px -20px, rgba(0, 0, 0, 0.02) 0px 56px 56px -20px, rgba(0, 0, 0, 0.03) 0px 32px 32px -20px, rgba(0, 0, 0, 0.03) 0px 16px 24px -12px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(249, 249, 249) 0px 0px 0px 10px;
+  --radius-xl: 14px;
 }
 ```
