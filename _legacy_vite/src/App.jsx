@@ -130,8 +130,7 @@ export default function App() {
           {filter === 'fav' && ' · favorites'}
           {search && ` matching "${search}"`}
         </p>
-        {galleryType === 'website' && visible.length > 0 && (
-        )}
+        {/* {galleryType === 'website' && visible.length > 0 && ()} */}
       </div>
 
       <div className="gallery-wrap">
