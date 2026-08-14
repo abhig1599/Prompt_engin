@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useWebsites } from '@/hooks/useWebsites';
 import { useToast } from '@/hooks/useToast';
 import Header from '@/components/layout/Header';
@@ -24,6 +24,7 @@ export default function WebsitesPage() {
   const [showTrash, setShowTrash] = useState(false);
   const [_detail, setDetail] = useState<string | null>(null);
   const [showEdit, setShowEdit] = useState<string | null>(null);
+  const [displayLimit, setDisplayLimit] = useState(24);
 
   const visible = useMemo(() => {
     let list = filter === 'fav' ? websites.filter(w => w.isFav) : websites;
@@ -37,6 +38,21 @@ export default function WebsitesPage() {
     }
     return list;
   }, [websites, search, filter]);
+
+  // Reset limit when filter or search changes
+  useEffect(() => {
+    setDisplayLimit(24);
+  }, [filter, search]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
+        setDisplayLimit(prev => Math.min(prev + 12, visible.length));
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [visible.length]);
 
   const selectedDetailWebsite = useMemo(() => websites.find(w => w.id === _detail), [websites, _detail]);
   const selectedEditWebsite = useMemo(() => websites.find(w => w.id === showEdit), [websites, showEdit]);
@@ -113,7 +129,7 @@ export default function WebsitesPage() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
             <NewWebsiteCard onClick={() => setShowAdd(true)} />
-            {visible.map(w => (
+            {visible.slice(0, displayLimit).map(w => (
               <WebsiteCard
                 key={w.id}
                 website={w}

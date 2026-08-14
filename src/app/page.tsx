@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo, useCallback, Suspense } from 'react';
+import { useState, useMemo, useCallback, Suspense, useEffect } from 'react';
 import { usePrompts } from '@/hooks/usePrompts';
 import { useToast } from '@/hooks/useToast';
 import Header from '@/components/layout/Header';
@@ -25,6 +25,7 @@ function HomeContent() {
   const [isSaving, setIsSaving] = useState(false);
   const [_detail, setDetail]    = useState<string | null>(null);
   const [showEdit, setShowEdit] = useState<string | null>(null);
+  const [displayLimit, setDisplayLimit] = useState(24);
 
   const visible = useMemo(() => {
     let list = filter === 'fav' ? prompts.filter(p => p.fav) : prompts;
@@ -38,6 +39,21 @@ function HomeContent() {
     }
     return list;
   }, [prompts, filter, search]);
+
+  // Reset limit when filter or search changes
+  useEffect(() => {
+    setDisplayLimit(24);
+  }, [filter, search]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
+        setDisplayLimit(prev => Math.min(prev + 12, visible.length));
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [visible.length]);
 
   const selectedDetailPrompt = useMemo(() => prompts.find(p => p.id === _detail), [prompts, _detail]);
   const selectedEditPrompt = useMemo(() => prompts.find(p => p.id === showEdit), [prompts, showEdit]);
@@ -117,7 +133,7 @@ function HomeContent() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '12px' }}>
             <NewPromptCard onClick={() => setShowAdd(true)} isSaving={isSaving} />
-            {visible.map(p => (
+            {visible.slice(0, displayLimit).map(p => (
               <PromptCard
                 key={p.id}
                 prompt={p}

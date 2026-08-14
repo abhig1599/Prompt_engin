@@ -1,6 +1,7 @@
 'use client';
 import { useState, useCallback, useEffect } from 'react';
 import { databases, ID, config } from '@/lib/appwrite';
+import { Query } from 'appwrite';
 
 const WEBSITES_TRASH_KEY = 'promptboard_websites_trash_v1';
 const WEBSITES_FAV_KEY   = 'promptboard_fav_websites_v1';
@@ -50,7 +51,7 @@ function mapDoc(doc: any, favsMap: Record<string, boolean>, myIds: string[]): We
     tags: docTags,
     faviconUrl: doc.faviconUrl || null,
     createdAt: doc.$createdAt,
-    isOwner: myIds.includes(doc.$id),
+    isOwner: true,
     isFav: !!favsMap[doc.$id],
   };
 }
@@ -68,7 +69,14 @@ export function useWebsites() {
         return;
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const res = await databases.listDocuments<any>(config.databaseId, config.websitesCollectionId);
+      const res = await databases.listDocuments<any>(
+        config.databaseId,
+        config.websitesCollectionId,
+        [
+          Query.orderDesc('$createdAt'),
+          Query.limit(5000)
+        ]
+      );
       const myIds = load<string[]>(WEBSITES_MY_KEY) ?? [];
       const favsMap = load<Record<string, boolean>>(WEBSITES_FAV_KEY) ?? {};
       

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useCallback, useEffect } from 'react';
 import { databases, storage, ID, config } from '@/lib/appwrite';
+import { Query } from 'appwrite';
 
 const TRASH_KEY = 'promptboard_trash_v1';
 const FAV_KEY   = 'promptboard_favs_v1';
@@ -55,7 +56,7 @@ function mapDoc(doc: any, favsMap: Record<string, boolean>, tagsMap: Record<stri
     tags: (localTags && localTags.length > 0) ? localTags : docTags,
     inputsNeeded: inputsMap[doc.$id] || doc.inputsNeeded || null,
     fav: !!favsMap[doc.$id],
-    isOwner: myIds.includes(doc.$id),
+    isOwner: true,
     createdAt: doc.$createdAt,
   };
 }
@@ -84,7 +85,14 @@ export function usePrompts() {
     if (!config.databaseId || !config.collectionId) { setLoading(false); return; }
     try {
       setLoading(true);
-      const res = await databases.listDocuments(config.databaseId, config.collectionId);
+      const res = await databases.listDocuments(
+        config.databaseId,
+        config.collectionId,
+        [
+          Query.orderDesc('$createdAt'),
+          Query.limit(5000)
+        ]
+      );
       const favsMap = load<Record<string, boolean>>(FAV_KEY) ?? {};
       const tagsMap = load<Record<string, string[]>>(TAGS_KEY) ?? {};
       const inputsMap = load<Record<string, string>>(INPUTS_KEY) ?? {};
